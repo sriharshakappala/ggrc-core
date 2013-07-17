@@ -33,10 +33,11 @@
     .span8
     .span1
       %input{"value":"Cancel","class":'btn btn-large',"type":'submit'}
-    .span2
+
+    .span3
       -if all_errors
-        %input{"value":"Correct Errors Before Proceeding","class":'btn btn-large btn-warning pull-right',"type":'submit','name':'confirm',"disabled":True}
+        %input{"value":"Correct Errors Before Proceeding","class":'btn btn-large btn-danger pull-right',"type":'submit','name':'confirm',"disabled":True}
       -elif all_warnings
         %input{"value":"Proceed with Caution","class":'btn btn-large btn-warning pull-right',"type":'submit','name':'confirm'}
       -else
-        %input{"value":"Finish Importing","class":'btn btn-large btn-warning pull-right',"type":'submit','name':'confirm'}
+        %input{"value":"Finish Importing","class":'btn btn-large btn-success pull-right',"type":'submit','name':'confirm'}
