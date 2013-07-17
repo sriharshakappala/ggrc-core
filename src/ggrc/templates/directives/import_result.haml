@@ -1,16 +1,19 @@
-#results-container
-  .row-fluid
-    .span6
-      %h4 Compliance Program
-      .row-fluid
-        .span10.control-group
-          %label{for:"slug"} Regulation / Contract / Policy
-          %input#slug.span12{disabled:"disabled",value:"{{converter.import_slug}}",type:"text"}/
-          %br/
 
-        .span2
-          %label{for:"version"} Version
-          %input#version.span12{disabled:"disabled",value:"",type:"text"}
-  - block errors_and_table
-  - block bottom_buttons
-  %br
+
+-block mainx
+  #results-container
+    .row-fluid
+      .span6
+       %h4 Compliance Program
+        .row-fluid
+          .span10.control-group
+            %label{for:"slug"} Regulation / Contract / Policy
+            %input#slug.span12{disabled:"disabled",value:"{{converter.import_slug}}",type:"text"}/
+            %br/
+
+          .span2
+            %label{for:"version"} Version
+            %input#version.span12{disabled:"disabled",value:"",type:"text"}
+    -block errors_and_table
+    -block bottom_buttons
+    %br

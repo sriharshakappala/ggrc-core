@@ -18,7 +18,6 @@
       (Regulations, Contracts, Policies) and Controls
   -else
     Controls
-
 -block main
   .container-fluid
     .row-fluid
@@ -31,5 +30,6 @@
         %input{"value":"Upload and Review","class":'btn btn-primary',"type":'submit'}
         %a{href:"/help/sections_import",target:'_blank',class:"import-help",'data-toggle':'modal-ajax'}
           View Help
+    -block mainx 
     -if exception_message is defined
       -include 'directives/import_errors.haml'
