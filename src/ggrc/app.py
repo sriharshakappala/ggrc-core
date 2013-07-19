@@ -10,7 +10,7 @@ from . import settings
 from flask import Flask
 # Using for import file upload
 from werkzeug import secure_filename
-
+from sqlalchemy import event
 
 app = Flask('ggrc', instance_relative_config=True)
 app.config.from_object(settings)
@@ -20,6 +20,10 @@ from . import db
 db.app = app
 db.init_app(app)
 
+def pool_size(*args):
+    app.logger.info('Pool: Size {0}, Checkedout: {1}'.format(db.engine.pool.size(), db.engine.pool.checkedout()))
+
+event.listen(db.engine, 'checkout', pool_size)
 # Initialize models
 import ggrc.models
 ggrc.models.init_app(app)
