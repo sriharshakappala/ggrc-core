@@ -33,3 +33,5 @@
           View Help
     -if exception_message is defined
       -include 'directives/import_errors.haml'
+    -if converter is defined
+        -include 'directives/import_result_errors.haml'
