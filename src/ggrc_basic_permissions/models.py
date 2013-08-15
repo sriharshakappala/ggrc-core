@@ -5,7 +5,6 @@
 
 import json
 from ggrc import db
-from ggrc.builder import simple_property
 from ggrc.models.context import Context
 from ggrc.models.mixins import Base, Described
 
@@ -26,7 +25,7 @@ class Role(Base, Described, db.Model):
   name  = db.Column(db.String(128), nullable=False)
   permissions_json = db.Column(db.Text(), nullable=False)
 
-  @simple_property
+  @property
   def permissions(self):
     permissions = json.loads(self.permissions_json) or {}
     # make sure not to omit actions

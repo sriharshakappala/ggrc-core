@@ -6,7 +6,7 @@
 from ggrc import db
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declared_attr
-from .mixins import deferred, Base, Timeboxed
+from .mixins import deferred, polymorphic_link, Base, Timeboxed
 from .reflection import PublishOnly
 
 class ObjectControl(Base, Timeboxed, db.Model):
@@ -25,7 +25,7 @@ class ObjectControl(Base, Timeboxed, db.Model):
   def controllable_attr(self):
     return '{0}_controllable'.format(self.controllable_type)
 
-  @property
+  @polymorphic_link
   def controllable(self):
     return getattr(self, self.controllable_attr)
 

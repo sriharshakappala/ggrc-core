@@ -5,7 +5,7 @@
 
 import ggrc.models
 from ggrc import db
-from .mixins import deferred, Base, Described
+from .mixins import deferred, polymorphic_link, Base, Described
 
 class Relationship(Base, db.Model):
   __tablename__ = 'relationships'
@@ -36,7 +36,7 @@ class Relationship(Base, db.Model):
   #notification semantics in sqlalchemy. Is it necessary to go beyond this,
   #though? Are there motivating use cases??
 
-  @property
+  @polymorphic_link
   def source(self):
     return self.get_relationship_node(
         '_source', self.source_type, self.source_id)
@@ -47,7 +47,7 @@ class Relationship(Base, db.Model):
     self.source_id = value.id if value is not None else None
     self.source_type = value.__class__.__name__ if value is not None else None
 
-  @property
+  @polymorphic_link
   def destination(self):
     return self.get_relationship_node(
         '_destination', self.destination_type, self.destination_id)

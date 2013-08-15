@@ -7,7 +7,7 @@
 from ggrc import db
 from sqlalchemy.ext.associationproxy import association_proxy
 from .categorization import Categorization
-from .mixins import deferred, Base, Hierarchical
+from .mixins import deferred, polymorphic_link, Base, Hierarchical
 
 class CategorizedPublishable(object):
   def __init__(self, attr_name, type_name):

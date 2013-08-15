@@ -5,7 +5,7 @@
 
 from ggrc import db
 from sqlalchemy.ext.associationproxy import association_proxy
-from .mixins import Base
+from .mixins import polymorphic_link, Base
 
 BACKREF_NAME_FORMAT = '{type}_{scope}_categorizable'
 
@@ -22,7 +22,7 @@ class Categorization(Base, db.Model):
     return BACKREF_NAME_FORMAT.format(
         type=self.categorizable_type, scope=self.category.scope_id)
 
-  @property
+  @polymorphic_link
   def categorizable(self):
     return getattr(self, self.categorizable_attr)
 

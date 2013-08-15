@@ -106,11 +106,11 @@ class FactoryAttributeGenerator(object):
     return []
 
   @classmethod
-  def property(cls, attr_name, class_attr):
+  def polymorphic_link(cls, attr_name, class_attr):
     return None
 
   @classmethod
-  def simple_property(cls, attr_name, class_attr):
+  def property(cls, attr_name, class_attr):
     return None
 
 class ModelFactoryMetaClass(FactoryMetaClass):

@@ -6,7 +6,7 @@
 from ggrc import db
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declared_attr
-from .mixins import deferred, Base, Timeboxed
+from .mixins import deferred, polymorphic_link, Base, Timeboxed
 from .reflection import PublishOnly
 
 class ObjectPerson(Base, Timeboxed, db.Model):
@@ -24,7 +24,7 @@ class ObjectPerson(Base, Timeboxed, db.Model):
   def personable_attr(self):
     return '{0}_personable'.format(self.personable_type)
 
-  @property
+  @polymorphic_link
   def personable(self):
     return getattr(self, self.personable_attr)
 

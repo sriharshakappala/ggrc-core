@@ -4,7 +4,7 @@
 # Maintained By: david@reciprocitylabs.com
 
 from ggrc import db
-from ggrc.models.mixins import deferred, Base, Described
+from ggrc.models.mixins import deferred, polymorphic_link, Base, Described
 
 class Context(Base, Described, db.Model):
   __tablename__ = 'contexts'
@@ -15,7 +15,7 @@ class Context(Base, Described, db.Model):
   related_object_type = deferred(
       db.Column(db.String(128), nullable=True), 'Context')
 
-  @property
+  @polymorphic_link
   def related_object(self, obj=[]):
     if len(obj) == 0:
       if self.related_object_type is not None:

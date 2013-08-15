@@ -6,7 +6,7 @@
 from ggrc import db
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declared_attr
-from .mixins import deferred, Base, Timeboxed
+from .mixins import deferred, polymorphic_link, Base, Timeboxed
 from .reflection import PublishOnly
 
 class ObjectObjective(Base, Timeboxed, db.Model):
@@ -24,7 +24,7 @@ class ObjectObjective(Base, Timeboxed, db.Model):
   def objectiveable_attr(self):
     return '{0}_objectiveable'.format(self.objectiveable_type)
 
-  @property
+  @polymorphic_link
   def objectiveable(self):
     return getattr(self, self.objectiveable_attr)
 

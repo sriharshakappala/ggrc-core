@@ -6,7 +6,7 @@
 from ggrc import db
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declared_attr
-from .mixins import deferred, Base, Timeboxed
+from .mixins import deferred, polymorphic_link, Base, Timeboxed
 from .reflection import PublishOnly
 
 class ObjectDocument(Base, Timeboxed, db.Model):
@@ -24,7 +24,7 @@ class ObjectDocument(Base, Timeboxed, db.Model):
   def documentable_attr(self):
     return '{0}_documentable'.format(self.documentable_type)
 
-  @property
+  @polymorphic_link
   def documentable(self):
     return getattr(self, self.documentable_attr)
 

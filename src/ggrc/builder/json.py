@@ -217,7 +217,7 @@ class UpdateAttrHandler(object):
     return cls.query_for(rel_class, json_obj, attr_name, True)
 
   @classmethod
-  def property(cls, obj, json_obj, attr_name, class_attr):
+  def polymorphic_link(cls, obj, json_obj, attr_name, class_attr):
     """Translate the JSON value for an object method decorated as a
     ``property``.
     """
@@ -235,7 +235,7 @@ class UpdateAttrHandler(object):
     return None
 
   @classmethod
-  def simple_property(cls, obj, json_obj, attr_name, class_attr):
+  def property(cls, obj, json_obj, attr_name, class_attr):
     return json_obj.get(attr_name)
 
 class Builder(AttributeInfo):
@@ -339,7 +339,7 @@ class Builder(AttributeInfo):
          isinstance(class_attr.property, RelationshipProperty):
       return self.publish_relationship(
           obj, attr_name, class_attr, inclusions, include)
-    elif class_attr.__class__.__name__ == 'property':
+    elif class_attr.__class__.__name__ == 'polymorphic_link':
       if not inclusions or include:
         return self.generate_link_object_for_foreign_key(
             getattr(obj, '{0}_id'.format(attr_name)),

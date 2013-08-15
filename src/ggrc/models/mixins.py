@@ -35,6 +35,9 @@ def deferred(column, classname):
   """
   return db.deferred(column, group=classname+'_complete')
 
+class polymorphic_link(property):
+  pass
+
 class Identifiable(object):
   """A model with an ``id`` property that is the primary key."""
   id = db.Column(db.Integer, primary_key=True)
