@@ -135,6 +135,21 @@
       {{/if_match}}
       {{/if}}
 
+      {{#if_equals parent_instance.constructor.shortName "Control"}}
+        <a
+          href="javascript://"
+          rel="tooltip"
+          data-placement="left"
+          data-toggle="modal-selector"
+          data-modal-selector-options="control_sections"
+          data-modal-class="modal-wide"
+          data-original-title="Map {{model.title_singular}} to this {{parent_instance.constructor.shortName}}"
+          data-join-object-id="{{parent_instance.id}}"
+          data-join-object-type="{{parent_instance.constructor.shortName}}">
+          + {{model.title_singular}}
+        </a>
+      {{/if_equals}}
+
     </div>
   </div>
 </li>

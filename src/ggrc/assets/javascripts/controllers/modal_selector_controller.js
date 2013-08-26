@@ -597,6 +597,33 @@
         //join_object: CMS.Models.Risk.findInCacheById(data.join_object_id)
       }
 
+      , control_sections : {
+        option_column_view: GGRC.mustache_path + "/selectors/option_column.mustache",
+        active_column_view: GGRC.mustache_path + "/selectors/active_column.mustache",
+        option_detail_view: GGRC.mustache_path + "/selectors/option_detail.mustache",
+
+        new_object_title: "Section",
+        modal_title: "Select Sections",
+
+        related_model_singular: "Sctions",
+        related_table_plural: "sections",
+        related_title_singular: "Section",
+        related_title_plural: "Sections",
+
+        option_model: CMS.Models.Section,
+        join_model: CMS.Models.ControlSection,
+
+        option_attr: 'section',
+        join_attr: 'control',
+        option_id_field: 'section_id',
+        //option_type_field: 'control_type',
+        join_id_field: 'control_id',
+        join_type_field: null,
+
+        join_object_id: data.join_object_id,
+        join_object_type: data.join_object_type
+        //join_object: CMS.Models.Risk.findInCacheById(data.join_object_id)
+      }
       , program_controls : {
         option_column_view: GGRC.mustache_path + "/selectors/option_column.mustache",
         active_column_view: GGRC.mustache_path + "/selectors/active_column.mustache",

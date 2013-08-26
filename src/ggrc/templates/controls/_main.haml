@@ -1,0 +1,19 @@
+-extends "layouts/_widget_box.haml"
+
+-set section_meta_kind = "section"
+
+-block widget_title
+  %i{ 'class': 'grcicon-section-color' }
+  ="{0}s".format(section_meta_kind|title)
+  %span=instance.sections.count
+
+
+-block widget_help
+  sections
+
+-block widget_id
+  section_widget
+
+-block main
+  #sections.tab-pane
+    %ul.tree-structure.new-tree

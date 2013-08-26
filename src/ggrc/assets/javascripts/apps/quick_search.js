@@ -115,7 +115,7 @@ var RELATIONSHIP_TYPES = {
     , "Regulation": []
     , "Policy" : []
     , "Contract" : []
-}};
+  }};
 
 GGRC.RELATIONSHIP_TYPES = RELATIONSHIP_TYPES;
 
