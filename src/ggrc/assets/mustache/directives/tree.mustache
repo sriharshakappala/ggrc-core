@@ -99,7 +99,7 @@
         {{^if_null 'z'}} {{! this line is just chopping the context stack down to one element}}
           <div class="inner-tree">
             {{#child_options}}
-              <h6>Sections ({{instance.sections.length}})</h6>
+              <h6>Clauses ({{instance.sections.length}})</h6>
               <ul class="tree-structure new-tree" {{data 'options'}} {{ (el) -> el.cms_controllers_tree_view(el.data("options")._data) }}></ul>
             {{/child_options}}
           </div>
