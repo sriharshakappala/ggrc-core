@@ -10,7 +10,7 @@ can.Model.Cacheable("can.Model.Join", {
     //this.reinit();
     if(this === can.Model.Join) {
       this.bind("created.reinit destroyed.reinit", function(ev, instance) {
-        if (instance instanceof can.Model.Join) {
+        if (instance instanceof can.Model.Join && !instance._skip_refresh) {
           instance.reinit();
         //can.proxy(this, "reinit"));
 

@@ -13,7 +13,7 @@ can.Model.Cacheable("CMS.Models.Program", {
   root_object : "program"
   , root_collection : "programs"
   , category : "programs"
-  , findAll : "/api/programs?kind=Directive"
+  , findAll : "/api/programs"
   , create : "POST /api/programs"
   , update : "PUT /api/programs/{id}"
   , destroy : "DELETE /api/programs/{id}"
@@ -1064,3 +1064,158 @@ CMS.Models.get_link_type = function(instance, attr) {
 };
 
 })(this.can);
+
+var failures_in_a_row = 0;
+function save_instance(instance, i, instances) {
+  var dfd = new $.Deferred()
+    , model_name = instance.constructor.shortName
+    ;
+
+  //console.debug('saving:', model_name, i, instance);
+
+  instance.save().done(function(instance) {
+    failures_in_a_row = 0;
+    if (!instances[model_name])
+      instances[model_name] = [];
+    instances[model_name].push(instance);
+    console.debug(i, model_name, instance);
+    dfd.resolve();
+  }).fail(function() {
+    failures_in_a_row++;
+    if (failures_in_a_row > 5) {
+      alert("Many failures... proceed?");
+      failures_in_a_row = 0;
+    }
+    dfd.resolve();
+  });
+
+  return dfd;
+}
+
+function instance_seed_data(n, model_names) {
+  var created = {}
+    , dfds = []
+    ;
+
+  if (!model_names)
+    model_names = [
+        "Program"
+      , "Regulation", "Policy", "Contract"
+      , "Control", "Objective", "Section"
+      , "DataAsset", "Facility", "Market", "OrgGroup", "Product", "Project"
+      , "System", "Process"
+      ];
+
+  can.each(model_names, function(model_name) {
+    var model = CMS.Models[model_name]
+      , i
+      , instance
+      ;
+
+    created[model_name] = [];
+
+    for (i=0; i<n; i++) {
+      instance = new model({
+          title: "Test " + model_name + " " + i
+        , context: { id: null }
+      });
+      dfds.push(save_instance(instance, i, created));
+    }
+  });
+
+  return $.when.apply($, dfds).then(function() {
+    return created;
+  });
+}
+
+function join_seed_data_for_instance(n, source_instance, targets_by_type, created) {
+  var dfds = []
+    , source_type = source_instance.constructor.shortName;
+
+  can.each(targets_by_type, function(target_instances, target_type) {
+    var join_descriptors =
+          GGRC.JoinDescriptor.by_object_option_models[source_type] &&
+          GGRC.JoinDescriptor.by_object_option_models[source_type][target_type]
+      , join_descriptor = join_descriptors && join_descriptors[0]
+      , join_model = join_descriptor && join_descriptor.get_join_model()
+      , target_instance
+      , join_instance
+      , i
+      ;
+
+    if (!join_model || target_instances.length == 0)
+      return;
+
+    if (!created[join_model.shortName])
+      created[join_model.shortName] = [];
+
+    for (i=0; i<n; i++) {
+      target_instance =
+        target_instances[Math.floor(Math.random() * target_instances.length)];
+      join_instance = join_descriptor.make_join_object(
+        source_instance, target_instance, { context: { id: null } })
+      join_instance._skip_refresh = true;
+      dfds.push(save_instance(join_instance, i, created));
+    }
+  });
+
+  return $.when.apply($, dfds);
+}
+
+function join_seed_data(n, sources_by_type, targets_by_type) {
+  var created = {}
+    , dfd = new $.when()
+    ;
+
+  can.each(sources_by_type, function(source_instances, source_type) {
+    can.each(source_instances, function(source_instance) {
+      dfd = dfd.then(function() {
+        return join_seed_data_for_instance(
+          n, source_instance, targets_by_type, created);
+      });
+    });
+  });
+
+  return dfd.then(function() {
+    return created;
+  });
+}
+
+function run_big_program_seed(n, m) {
+  var instance_seeds;
+
+  return instance_seed_data(n)
+    .then(function(instances_by_type) {
+      var sources_by_type = {
+          Program: [instances_by_type.Program[0]]
+        , Objective: [instances_by_type.Objective]
+        , Control: [instances_by_type.Control]
+      }
+      instance_seeds = instances_by_type;
+      console.debug("instances:", instances_by_type);
+      return join_seed_data(m, sources_by_type, instances_by_type);
+    })
+    .then(function(joins_by_type) {
+      console.debug("joins:", joins_by_type);
+      $.extend(instance_seeds, joins_by_type);
+      console.debug("final:", instance_seeds);
+      return instance_seeds;
+    });
+}
+
+function run_seed(n) {
+  var instance_seeds;
+
+  return instance_seed_data(n)
+    .then(function(instances_by_type) {
+      instance_seeds = instances_by_type;
+      console.debug("instances:", instances_by_type);
+      return join_seed_data(n, instances_by_type);
+    })
+    .then(function(joins_by_type) {
+      console.debug("joins:", joins_by_type);
+      $.extend(instance_seeds, joins_by_type);
+      console.debug("final:", instance_seeds);
+      return instance_seeds;
+    });
+}
