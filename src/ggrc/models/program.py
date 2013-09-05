@@ -5,6 +5,7 @@
 
 from ggrc import db
 from .associationproxy import association_proxy
+from .context import Contextable
 from .mixins import deferred, BusinessObject, Timeboxed
 from .object_document import Documentable
 from .object_objective import Objectiveable
@@ -13,7 +14,7 @@ from .reflection import PublishOnly
 from .relationship import Relatable
 
 class Program(
-    Documentable, Personable, Objectiveable, Relatable,
+    Documentable, Personable, Objectiveable, Relatable, Contextable,
     BusinessObject, Timeboxed, db.Model):
   __tablename__ = 'programs'
 

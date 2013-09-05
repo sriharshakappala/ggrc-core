@@ -113,20 +113,7 @@ class UserPermissions(DefaultUserPermissions):
                   .setdefault(resource_type, [])\
                   .append(user_role.context_id)
       #grab personal context
-      personal_context = db.session.query(Context).filter(
-          Context.related_object_id == user.id,
-          Context.related_object_type == 'Person',
-          ).first()
-      if not personal_context:
-        personal_context = Context(
-            name='Personal Context for {0}'.format(user.id),
-            description='',
-            context_id=1,
-            related_object_id=user.id,
-            related_object_type='Person',
-            )
-        db.session.add(personal_context)
-        db.session.commit()
+      personal_context = user.get_or_create_personal_context()
       session['permissions']['__GGRC_ADMIN__'] = {
           '__GGRC_ALL__': [personal_context.id,],
           }
@@ -141,8 +128,9 @@ def all_collections():
 @Resource.model_posted.connect_via(Program)
 def handle_program_post(sender, obj=None, src=None, service=None):
   if src.get('private', False):
+    user = get_current_user()
     # get the personal context for this logged in user
-    personal_context = service.personal_context()
+    personal_context = user.get_or_create_personal_context()
 
     # create a context specific to the program
     context = Context(
@@ -153,7 +141,6 @@ def handle_program_post(sender, obj=None, src=None, service=None):
         description='',
         )
     db.session.add(context)
-    db.session.flush()
     obj.context = context
 
     # add a user_roles mapping assigning the user creating the program
@@ -161,14 +148,13 @@ def handle_program_post(sender, obj=None, src=None, service=None):
     program_owner_role = db.session.query(Role)\
         .filter(Role.name == 'ProgramOwner').first()
     user_role = UserRole(
-        person=get_current_user(),
+        person=user,
         role=program_owner_role,
         context=context,
         )
     db.session.add(user_role)
-    db.session.flush()
 
-    assign_role_reader(get_current_user())
+    assign_role_reader(user)
 
 @Resource.model_posted.connect_via(UserRole)
 def handle_program_owner_role_assignment(
@@ -193,8 +179,7 @@ def assign_role_reader(user):
           context_id=1,
           )
       db.session.add(role_reader_for_user)
-      db.session.flush()
-    
+
     # force a reload of permissions
     #del session['permissions']
 

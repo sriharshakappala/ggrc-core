@@ -410,28 +410,6 @@ class Resource(ModelView):
         return None
     return None
 
-  def personal_context(self):
-    current_user_id = get_current_user_id()
-    context = db.session.query(Context).filter(
-        Context.related_object_id == current_user_id,
-        Context.related_object_type == 'Person',
-        ).first()
-    if not context:
-      context = Context(
-          name='Personal Context for {0}'.format(current_user_id),
-          description='',
-          context_id=1,
-          related_object_id=current_user_id,
-          related_object_type='Person',
-          )
-      db.session.add(context)
-      db.session.commit()
-    return context
-
-  def handle_create(self, obj, src):
-    """Do NOTHING by default"""
-    pass
-
   def collection_post(self):
     if self.request.headers['Content-Type'] != 'application/json':
       return current_app.make_response((

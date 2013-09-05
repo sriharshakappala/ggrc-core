@@ -9,9 +9,10 @@ from .mixins import deferred, Base
 from .reflection import PublishOnly
 from .utils import validate_option
 from .exceptions import ValidationError
+from .context import Contextable
 import re
 
-class Person(Base, db.Model):
+class Person(Base, Contextable, db.Model):
   __tablename__ = 'people'
 
   email = deferred(db.Column(db.String), 'Person')
@@ -68,6 +69,12 @@ class Person(Base, db.Model):
       message = "Must provide a valid email address"
       raise ValidationError(message)
     return email
+
+  def get_or_create_personal_context(self):
+    return self.get_or_create_object_context(
+        context=1,
+        name='Personal Context for {0}'.format(self.id),
+        description='')
 
   @classmethod
   def eager_query(cls):
