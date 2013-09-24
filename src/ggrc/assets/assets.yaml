@@ -23,6 +23,7 @@ dashboard-js-files:
   - bootstrap/modal-ajax.js
   - bootstrap/scrollspy.js
   - bootstrap/affix.js
+  - html-sanitizer-minified.js
   - wysihtml5_parser_rules/advanced.js
   - wysihtml5-0.3.0_rc2.js
   - bootstrap-wysihtml5-0.0.2.js

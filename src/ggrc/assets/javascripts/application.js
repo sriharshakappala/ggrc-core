@@ -88,6 +88,41 @@ window.onerror = function(message, url, linenumber) {
     return zindex + 10;
   };
 
+(function(html_sanitize) {
+  // Whitelisted tags and attributes
+  var tags = [
+        'strong', 'em', 'b', 'i', 'p', 'code', 'pre', 'tt', 'samp', 
+        'kbd', 'var', 'sub', 'sup', 'dfn', 'cite', 'big', 'small', 'address', 
+        'hr', 'br', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 
+        'ol', 'li', 'dl', 'dt', 'dd', 'abbr', 'acronym', 'a', 'img', 
+        'blockquote', 'del', 'ins', 'table', 'tr', 'td', 'th'
+      ]
+    , attrs = [
+        'href', 'src', 'width', 'height', 'alt', 'cite', 'datetime', 
+        'title', 'class', 'name', 'xml:lang', 'abbr'
+      ]
+    ;
+
+  // Apply whitelist to tags/attributes
+  var sanitizer = html.makeHtmlSanitizer(function(tag, attribs) {
+    if (can.inArray(tag, tags) > -1) {
+      // attribs = [attr1, attr1-value, attr2, attr2-value, ...]
+      for (var i = attribs.length - 2, attr; attr = attribs[i]; i -= 2) {
+        if (can.inArray(attr, attrs) === -1) {
+          attribs.splice(i, 2);
+        }
+      }
+      return { attribs: attribs };
+    }
+  });
+
+  window.html_sanitize = function(inputHtml) {
+    var out = [];
+    sanitizer(inputHtml, out);
+    return out.join('');
+  };
+})(window.html_sanitize);
+
 (function(GGRC) {
   var eventqueue = [];
 
