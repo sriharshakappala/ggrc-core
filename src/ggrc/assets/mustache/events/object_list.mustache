@@ -1,4 +1,38 @@
 {{! dashboard object listing}}
+<div class="advanced-filters">
+  <div class="row-fluid">
+    <div class="span4">
+      <select>
+        <option>Show All Events</option>
+        <option>Mappings</option>
+        <option>Unmappings</option>
+        <option>Updates</option>
+        <option>Creations</option>
+        <option>Deletions</option>
+      </select>
+    </div>
+    <div class="span4">
+      <ul class="filter-date-range">
+        <li>
+          <span>Date Range:</span>
+        </li>
+        <li>
+          <input class="input-mini date" name="filter_start_date" data-toggle="datepicker" data-before="filter_end_date" placeholder="MM/DD/YYYY" type="text" value="{{localize_date filter_start_date}}"> - 
+        </li>
+        <li>
+          <input class="input-mini date" name="filter_end_date" data-toggle="datepicker" data-after="filter_start_date" placeholder="MM/DD/YYYY" type="text" value="{{localize_date filter_end_date}}">
+        </li>
+      </ul>
+    </div>
+    <div class="span4">
+      <div class="objective-selector">
+        {{#using owner=owner}}
+        <i class="grcicon-person-green"></i> <input type="text" name="owner.email" data-lookup="Person" class="span8 audit-selector" value="{{firstnonempty owner.email ''}}">
+        {{/using}}
+      </div>
+    </div>
+  </div>
+</div>
 <ul class="tree-structure new-tree">
   {{#list}}
     <li class="tree-item {{resource_type.toLowerCase}}" data-model="true" {{data 'model'}}>

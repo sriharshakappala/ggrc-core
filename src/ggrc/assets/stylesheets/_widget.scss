@@ -595,6 +595,20 @@
   }
 }
 
+.advanced-filters {
+  background: $widgetHeader;
+  border-bottom: 1px solid $widgetBorder;
+  .filter-date-range {
+    @include reset-list();
+    li {
+      display: inline-block;
+      span {
+        color: $darkGray;
+      }
+    }
+  }
+}
+
 .widget-filters {
   @include background-image(linear-gradient(top, #eee, $white));
   @include border-radius(4px 0 4px 4px);
