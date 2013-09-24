@@ -249,7 +249,7 @@ can.Control("GGRC.Controllers.Modals", {
     } else if ($elem.is("[type=checkbox]")) {
       value = $elem.is(":checked");
     } else {
-      value = item.value;
+      value = item.value ? html_sanitize(item.value) : item.value;
     }
 
     if ($elem.is("[null-if-empty]") && (!value || value.length === 0))

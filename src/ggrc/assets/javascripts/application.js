@@ -101,24 +101,26 @@ window.onerror = function(message, url, linenumber) {
         'href', 'src', 'width', 'height', 'alt', 'cite', 'datetime', 
         'title', 'class', 'name', 'xml:lang', 'abbr'
       ]
+    , sanitizer = html.makeHtmlSanitizer(function(tag, attribs) {
+        if (can.inArray(tag, tags) > -1) {
+          // attribs = [attr1, attr1-value, attr2, attr2-value, ...]
+          for (var i = attribs.length - 2, attr; attr = attribs[i]; i -= 2) {
+            if (can.inArray(attr, attrs) === -1) {
+              attribs.splice(i, 2);
+            }
+          }
+          return { attribs: attribs };
+        }
+        return null;
+      })
+    , strip = html.makeHtmlSanitizer(function() {
+        return null;
+      })
     ;
 
-  // Apply whitelist to tags/attributes
-  var sanitizer = html.makeHtmlSanitizer(function(tag, attribs) {
-    if (can.inArray(tag, tags) > -1) {
-      // attribs = [attr1, attr1-value, attr2, attr2-value, ...]
-      for (var i = attribs.length - 2, attr; attr = attribs[i]; i -= 2) {
-        if (can.inArray(attr, attrs) === -1) {
-          attribs.splice(i, 2);
-        }
-      }
-      return { attribs: attribs };
-    }
-  });
-
-  window.html_sanitize = function(inputHtml) {
+  window.html_sanitize = function(inputHtml, stripAllHtml) {
     var out = [];
-    sanitizer(inputHtml, out);
+    (stripAllHtml ? strip : sanitizer)(inputHtml, out);
     return out.join('');
   };
 })(window.html_sanitize);
