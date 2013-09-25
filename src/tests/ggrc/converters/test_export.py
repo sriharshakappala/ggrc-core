@@ -24,7 +24,7 @@ class TestExport(TestCase):
   def setUp(self):
     self.csv_filename = "dummy_filename.csv"
     self.expected_status_code = 200
-    self.expected_headers = [('Content-Type', 'text/csv'), ('Content-Disposition','attachment; filename="{}"'.format(self.csv_filename))]
+    self.expected_headers = [('Content-Type', 'text/csv'), ('Content-Disposition', 'attachment; filename="{}"'.format(self.csv_filename))]
     super(TestExport, self).setUp()
 
   def tearDown(self):
