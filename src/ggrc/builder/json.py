@@ -385,10 +385,10 @@ class Builder(AttributeInfo):
       json_obj[attr_name] = self.publish_attr(
           obj, attr_name, local_inclusion[1:], len(local_inclusion) > 0)
 
-  def publish_attrs(self, obj, json_obj, inclusions):
+  def publish_attrs(self, obj, json_obj, extra_inclusions):
     """Translate the state represented by ``obj`` into the JSON dictionary
     ``json_obj``.
-    
+
     The ``inclusions`` parameter can specify a tree of property paths to be
     inlined into the representation. Leaf attributes will be inlined completely
     if they are links to other objects. The inclusions data structure is a
@@ -401,6 +401,8 @@ class Builder(AttributeInfo):
       [('directives'),('cycles')]
       [('directives', ('audit_frequency','organization')),('cycles')]
     """
+    inclusions = tuple((attr,) for attr in self._include_links)
+    inclusions = tuple(set(inclusions).union(set(extra_inclusions)))
     return self._publish_attrs_for(
         obj, self._publish_attrs, json_obj, inclusions)
 

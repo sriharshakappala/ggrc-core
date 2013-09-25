@@ -36,8 +36,15 @@ class Objective(Objectiveable, Documentable, Personable, BusinessObject, db.Mode
       #'object_objectives',
       'objective_objects',
       ]
+
   _sanitize_html = [
       'notes',
+      ]
+
+  _include_links = [
+      'section_objectives',
+      'objective_controls',
+      'objective_objects',
       ]
 
   @classmethod
@@ -45,7 +52,7 @@ class Objective(Objectiveable, Documentable, Personable, BusinessObject, db.Mode
     from sqlalchemy import orm
 
     query = super(Objective, cls).eager_query()
-    return query.options(
-        orm.subqueryload_all('section_objectives.section'),
-        orm.subqueryload_all('objective_controls.control'),
-        orm.subqueryload_all('objective_objects'))
+    return cls.eager_inclusions(query, Objective._include_links).options(
+        orm.subqueryload('section_objectives'),
+        orm.subqueryload('objective_controls'),
+        orm.subqueryload('objective_objects'))

@@ -143,10 +143,19 @@ class Control(
       PublishOnly('program_controls'),
       'object_controls',
       ]
+
   _sanitize_html = [
       'documentation_description',
       'version',
       'notes',
+      ]
+
+  _include_links = [
+      'control_sections',
+      'objective_controls',
+      'directive_controls',
+      'program_controls',
+      'object_controls',
       ]
 
   @validates('type', 'kind', 'means', 'verify_frequency')
@@ -158,15 +167,14 @@ class Control(
   def eager_query(cls):
     from sqlalchemy import orm
     query = super(Control, cls).eager_query()
-    return query.options(
+    return cls.eager_inclusions(query, Control._include_links).options(
         orm.joinedload('directive'),
         orm.joinedload('control_assessments'),
-        orm.joinedload('control_controls'),
+        orm.subqueryload('control_controls'),
         orm.joinedload('implementing_control_controls'),
         orm.joinedload('control_risks'),
-        orm.joinedload('control_sections'),
-        orm.joinedload('objective_controls'),
-        orm.joinedload('directive_controls'),
-        orm.joinedload('program_controls'),
-        orm.joinedload('object_controls'),
-        )
+        orm.subqueryload('control_sections'),
+        orm.subqueryload('objective_controls'),
+        orm.subqueryload_all('directive_controls.directive'),
+        orm.subqueryload('program_controls'),
+        orm.subqueryload('object_controls'))

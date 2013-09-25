@@ -83,9 +83,14 @@ class Sectionable(object):
       'object_sections',
       ]
 
+  _include_links = [
+      'object_sections',
+      ]
+
   @classmethod
   def eager_query(cls):
     from sqlalchemy import orm
 
     query = super(Sectionable, cls).eager_query()
-    return query.options(orm.joinedload('object_sections'))
+    return cls.eager_inclusions(query, Sectionable._include_links).options(
+        orm.subqueryload('object_sections'))

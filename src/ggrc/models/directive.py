@@ -60,20 +60,26 @@ class Directive(Timeboxed, BusinessObject, db.Model):
       'audit_start_date',
       'audit_frequency',
       'audit_duration',
-      'controls',
+      PublishOnly('controls'),
       'kind',
       'organization',
-      'programs',
-      PublishOnly('program_directives'),
-      PublishOnly('directive_controls'),
+      PublishOnly('programs'),
+      'program_directives',
+      'directive_controls',
       'scope',
-      'sections',
+      PublishOnly('sections'),
       'version',
       ]
+
   _sanitize_html = [
       'organization',
       'scope',
       'version',
+      ]
+
+  _include_links = [
+      'program_directives',
+      'directive_controls',
       ]
 
   @validates('kind')
@@ -93,11 +99,11 @@ class Directive(Timeboxed, BusinessObject, db.Model):
     from sqlalchemy import orm
 
     query = super(Directive, cls).eager_query()
-    return query.options(
+    return cls.eager_inclusions(query, Directive._include_links).options(
         orm.joinedload('audit_frequency'),
         orm.joinedload('audit_duration'),
         orm.subqueryload('controls'),
-        orm.subqueryload_all('program_directives.program'),
+        orm.subqueryload_all('program_directives'),
         orm.subqueryload_all('directive_controls'),
         orm.subqueryload('sections'))
 

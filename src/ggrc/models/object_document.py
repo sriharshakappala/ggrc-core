@@ -83,9 +83,14 @@ class Documentable(object):
       'object_documents',
       ]
 
+  _include_links = [
+      'object_documents',
+      ]
+
   @classmethod
   def eager_query(cls):
     from sqlalchemy import orm
 
     query = super(Documentable, cls).eager_query()
-    return query.options(orm.joinedload('object_documents'))
+    return cls.eager_inclusions(query, Documentable._include_links).options(
+        orm.subqueryload('object_documents'))

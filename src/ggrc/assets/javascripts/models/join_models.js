@@ -82,7 +82,7 @@ can.Model.Cacheable("can.Model.Join", {
               model_name
             , object_id
             , this[attr]
-            ) || this[attr]);
+            ).stub() || this[attr]);
     }
 
   , init_join_objects: function() {

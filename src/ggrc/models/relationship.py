@@ -115,11 +115,16 @@ class Relatable(object):
       'related_destinations'
       ]
 
+  _include_links = [
+      'related_sources',
+      'related_destinations'
+      ]
+
   @classmethod
   def eager_query(cls):
     from sqlalchemy import orm
 
     query = super(Relatable, cls).eager_query()
-    return query.options(
+    return cls.eager_inclusions(query, Relatable._include_links).options(
         orm.subqueryload('related_sources'),
         orm.subqueryload('related_destinations'))

@@ -84,9 +84,14 @@ class Controllable(object):
       'object_controls',
       ]
 
+  _include_links = [
+      'object_controls',
+      ]
+
   @classmethod
   def eager_query(cls):
     from sqlalchemy import orm
 
     query = super(Controllable, cls).eager_query()
-    return query.options(orm.joinedload('object_controls'))
+    return cls.eager_inclusions(query, Controllable._include_links).options(
+        orm.subqueryload('object_controls'))

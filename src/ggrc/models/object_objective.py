@@ -83,9 +83,14 @@ class Objectiveable(object):
       'object_objectives',
       ]
 
+  _include_links = [
+      'object_objectives',
+      ]
+
   @classmethod
   def eager_query(cls):
     from sqlalchemy import orm
 
     query = super(Objectiveable, cls).eager_query()
-    return query.options(orm.joinedload('object_objectives'))
+    return cls.eager_inclusions(query, Objectiveable._include_links).options(
+        orm.subqueryload('object_objectives'))

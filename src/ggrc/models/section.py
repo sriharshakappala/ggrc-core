@@ -53,12 +53,18 @@ class Section(Documentable, Personable, Hierarchical, BusinessObject, db.Model):
   #    'object_sections',
   #    ]
 
+  _include_links = [
+      'control_sections',
+      'section_objectives',
+      'object_sections',
+      ]
+
   @classmethod
   def eager_query(cls):
     from sqlalchemy import orm
 
     query = super(Section, cls).eager_query()
-    return query.options(
+    return cls.eager_inclusions(query, Section._include_links).options(
         orm.joinedload('directive'),
         orm.joinedload('control_sections'),
         orm.joinedload('section_objectives'),

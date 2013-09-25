@@ -51,6 +51,7 @@ class AttributeInfo(object):
     self._stub_attrs = AttributeInfo.gather_stub_attrs(tgt_class)
     self._update_attrs = AttributeInfo.gather_update_attrs(tgt_class)
     self._create_attrs = AttributeInfo.gather_create_attrs(tgt_class)
+    self._include_links = AttributeInfo.gather_include_links(tgt_class)
 
   @classmethod
   def gather_attrs(cls, tgt_class, src_attrs, accumulator=None):
@@ -97,6 +98,10 @@ class AttributeInfo(object):
   def gather_create_attrs(cls, tgt_class):
     return cls.gather_attrs(tgt_class, [
       '_create_attrs', '_update_attrs', '_publish_attrs'])
+
+  @classmethod
+  def gather_include_links(cls, tgt_class):
+    return cls.gather_attrs(tgt_class, ['_include_links'])
 
 class SanitizeHtmlInfo(AttributeInfo):
   def __init__(self, tgt_class):

@@ -54,6 +54,17 @@ class Identifiable(object):
         db.undefer_group(mapper_class.__name__+'_complete'),
         )
 
+  @classmethod
+  def eager_inclusions(cls, query, include_links):
+    from sqlalchemy import orm
+    options = []
+    for include_link in include_links:
+      inclusion_class = getattr(cls, include_link).property.mapper.class_
+      options.append(orm.joinedload(include_link))
+      print inclusion_class.__name__
+      options.append(orm.undefer_group(inclusion_class.__name__ + '_complete'))
+    return query.options(*options)
+
 def created_at_args():
   """Sqlite doesn't have a server, per se, so the server_* args are useless."""
   return {'default': db.text('current_timestamp'),}
