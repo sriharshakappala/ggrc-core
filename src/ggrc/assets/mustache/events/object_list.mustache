@@ -34,33 +34,106 @@
     </div>
   </div>
 </div>
-<ul class="tree-structure new-tree">
+<ul class="tree-structure new-tree event-tree">
   {{#list}}
     <li class="tree-item {{resource_type.toLowerCase}}" data-model="true" {{data 'model'}}>
-      <div class="simple-link">
-        <div class="row-fluid">
-          <div class="span12">
-            <div class="item-data">
-              <div class="tree-title-area">
-                <i class="grcicon-{{resource_type.toLowerCase}}-color" rel="tooltip" title="{{resource_type}}"></i>
-                {{#revisions}}
-                  <strong>
-                    {{firstnonempty description display_name}};
-                  </strong>
-                {{/revisions}}
-                <span class="event-owner">
-                  by
-                  {{#modified_by}}
-                    {{email}}
-                  {{/modified_by}}
-                </span>
-                <span class="event-time">
-                  on {{date created_at}}
-                </span>
+      <div class="item-main" {{#instance}}{{data 'model'}}{{/instance}}>
+        <a href="javascript://" class="openclose">
+          <div class="row-fluid">
+            <div class="span12">
+              <div class="item-data">
+                <div class="tree-title-area">
+                  <i class="grcicon-{{resource_type.toLowerCase}}-color" rel="tooltip" title="{{resource_type}}"></i>
+                  {{#revisions}}
+                    <strong>
+                      {{firstnonempty description display_name}};
+                    </strong>
+                  {{/revisions}}
+                  <span class="event-owner">
+                    by
+                    {{#modified_by}}
+                      {{email}}
+                    {{/modified_by}}
+                  </span>
+                  <span class="event-time">
+                    on {{date created_at}}
+                  </span>
+                  <span class="event-more">more...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      
+      <div class="tier-2-info item-content">
+        <div class="tier-2-info-content">
+  
+          <div class="row-fluid">
+  
+            <div class="span6">
+            {{#if instance.viewLink}}
+              <a href="{{instance.viewLink}}" class="info-action">
+                View {{instance.constructor.title_singular}}
+                <i class="grcicon-goto"></i>
+              </a>
+            {{/if}}
+            </div>
+  
+            <div class="span6">
+            {{#if mappings}}
+            {{#is_allowed_all 'delete' mappings}}
+              <a href="javascript://" class="info-action unmap pull-right" data-toggle="unmap">
+                {{#result}}<span class="result" {{data 'result'}}></span>{{/result}}
+                <i class="grcicon-remove"></i>
+                Unmap
+              </a>
+            {{/is_allowed_all}}
+            {{/if}}
+            </div>
+  
+          </div>
+  
+          {{#instance.description}}
+          <div class="show-description">
+            <div class="row-fluid">
+              <div class="span12">
+                <div class="tree-description short">
+                  {{{instance.description}}}
+                </div>
+                {{{show_long}}}
+              </div>
+            </div>
+          </div>
+          {{/instance.description}}
+          
+          <div class="row-fluid">
+            <div class="span6">
+              <div class="tree-info">
+                <strong>Owner:</strong>
+                {{^instance.owner}}
+                  <span class="error">
+                    Not Assigned
+                  </span>
+                {{/instance.owner}}
+                {{#if instance.owner}}
+                  {{#using owner=instance.owner}}
+                  {{owner.name}}
+                  {{/using}}
+                {{/if}}
+              </div>
+            </div>
+            <div class="span6">
+              <div class="tree-info">
+                <strong>URL:</strong>
+                <a class="url" href="{{schemed_url instance.url}}" target="_blank">
+                  {{instance.url}}
+                </a>
               </div>
             </div>
           </div>
         </div>
+  
       </div>
     </li>
   {{/list}}

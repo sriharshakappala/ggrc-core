@@ -18,6 +18,13 @@ ul.new-tree {
     }
     
   }
+  &.event-tree {
+    a.openclose {
+      &.active {
+        font-weight: normal;
+      }
+    }
+  }
   
   a.simple-link {
     .row-fluid {
@@ -247,6 +254,12 @@ ul.new-tree {
     .event-time {
       font-size:13px;
       color:#777;
+    }
+    .event-more {
+      float: right;
+      color: $blue;
+      margin-right: 20px;
+      font-size: 13px;
     }
 
   }
