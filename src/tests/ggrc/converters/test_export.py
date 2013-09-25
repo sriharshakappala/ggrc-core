@@ -4,17 +4,15 @@
 # Maintained By: silas@reciprocitylabs.com
 
 from datetime import datetime
+from os.path import abspath, dirname, join
 
 from mock import patch
 
-from ggrc import db
-from ggrc.models.control import Control
-from ggrc.models.directive import Policy
 from ggrc.converters.import_helper import handle_converter_csv_export
 from ggrc.converters.controls import ControlsConverter
+from ggrc.models.control import Control
+from ggrc.models.directive import Policy
 from tests.ggrc import TestCase
-
-from os.path import abspath, dirname, join
 
 THIS_ABS_PATH = abspath(dirname(__file__))
 CSV_DIR = join(THIS_ABS_PATH, 'comparison_csvs/')
@@ -24,7 +22,13 @@ class TestExport(TestCase):
   def setUp(self):
     self.csv_filename = "dummy_filename.csv"
     self.expected_status_code = 200
-    self.expected_headers = [('Content-Type', 'text/csv'), ('Content-Disposition', 'attachment; filename="{}"'.format(self.csv_filename))]
+    self.expected_headers = [
+        ('Content-Type', 'text/csv'),
+        (
+            'Content-Disposition',
+            'attachment; filename="{}"'.format(self.csv_filename)
+        )
+    ]
     super(TestExport, self).setUp()
 
   def tearDown(self):
