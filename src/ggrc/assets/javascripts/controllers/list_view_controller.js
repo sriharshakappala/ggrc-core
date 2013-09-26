@@ -103,7 +103,7 @@ can.Control("GGRC.Controllers.ListView", {
 
             var collection_name = that.options.model.root_collection+"_collection";
             return that.options.model[that.options.model.list_view_options.find_function]().then(function(result) {
-              can.each(result[collection_name].reverse(), function(instance) {
+              can.each(result[collection_name], function(instance) {
                 if (instance.constructor == controller.options.model)
                   insert_instance(instance);
               });

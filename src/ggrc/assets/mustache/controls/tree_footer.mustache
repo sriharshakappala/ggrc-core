@@ -4,26 +4,28 @@
 {{#is_allowed 'create' model.shortName}}
 <li class="tree-footer tree-item tree-item-add">
   <div class="row-fluid">
-    <div class="span12">
+    <div class="span12 section-expandable">
       <a href="javascript://" class="section-add">
         + {{model.title_singular}}
       </a>
-      <a href="javascript://" class="section-create" data-toggle="modal-ajax-form" data-modal-reset="reset" data-dirty="#regulations, #combo" data-route="regulations" data-modal-class="modal-wide" data-object-singular="Control" data-object-plural="controls" data-object-params='{ "directive": {{parent_instance.id}} }'>
-        <i class="grcicon-add-black"></i>
-        Create {{model.title_singular}}
-      </a>
-      &nbsp;
-      &nbsp;
-      <a href="{{parent_instance.viewLink}}/import_controls" class="section-import">
-        <i class="grcicon-imp-exp"></i>
-        Import Controls
-      </a>
-      &nbsp;
-      &nbsp;
-      <a href="{{parent_instance.viewLink}}/export_controls" class="section-import">
-        <i class="grcicon-imp-exp"></i>
-        Export Controls
-      </a>
+      <span class="section-expander">
+        <a href="javascript://" class="section-create" data-toggle="modal-ajax-form" data-modal-reset="reset" data-dirty="#regulations, #combo" data-route="regulations" data-modal-class="modal-wide" data-object-singular="Control" data-object-plural="controls" data-object-params='{ "directive": {{parent_instance.id}} }'>
+          <i class="grcicon-add-black"></i>
+          Create {{model.title_singular}}
+        </a>
+        &nbsp;
+        &nbsp;
+        <a href="{{parent_instance.viewLink}}/import_controls" class="section-import">
+          <i class="grcicon-imp-exp"></i>
+          Import Controls
+        </a>
+        &nbsp;
+        &nbsp;
+        <a href="{{parent_instance.viewLink}}/export_controls" class="section-import">
+          <i class="grcicon-imp-exp"></i>
+          Export Controls
+        </a>
+      </span>
     </div>
   </div>
 </li>

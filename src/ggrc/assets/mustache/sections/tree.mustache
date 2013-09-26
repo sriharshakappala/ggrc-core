@@ -12,48 +12,48 @@
               </div>
             </div>
           </div>
-          <div class="span1">
-            <div class="counter">
-              {{#pack list=instance.business_objects na=na id=id}}
-                <i class="grcicon-object-black"></i>
-                {{#with list}}
-                  {{#if length}} 
-                    <span>{{length}}</span>
-                  {{else}}
-                    <strong class="error">0</strong>
-                  {{/if}}
-                {{/with}}
-              {{/pack}}
-            </div>
-          </div>
-          <div class="span1">
-            <div class="counter">
-              {{#pack list=instance.controls na=na id=id}}
-                <i class="grcicon-control-black"></i>
-                {{#with list}}
-                  {{#if length}} 
-                    <span>{{length}}</span>
-                  {{else}}
-                    <strong class="error">0</strong>
-                  {{/if}}
-                {{/with}}
-              {{/pack}}
-            </div>
-          </div>
-          <div class="span1">
-            <div class="counter">
-              {{#pack list=instance.objectives na=na id=id}}
-                <i class="grcicon-objective-black"></i>
-                {{#with list}}
-                  {{#if length}} 
-                    <span>{{length}}</span>
-                  {{else}}
-                    <strong class="error">0</strong>
-                  {{/if}}
-                {{/with}}
-              {{/pack}}
-            </div>
-          </div>
+          {{#pack list=instance.controls na=na id=id}}
+            {{#with list}}
+              <div class="span1 section-item-count">
+                <div class="counter">
+                  <i class="grcicon-control-black"></i>
+                    {{#if length}} 
+                      <span>{{length}}</span>
+                    {{else}}
+                      <strong class="error">0</strong>
+                    {{/if}}
+                </div>
+              </div>
+            {{/with}}
+          {{/pack}}
+          {{#pack list=instance.objectives na=na id=id}}
+            {{#with list}}
+              <div class="span1 section-item-count">
+                <div class="counter">
+                  <i class="grcicon-objective-black"></i>
+                    {{#if length}} 
+                      <span>{{length}}</span>
+                    {{else}}
+                      <strong class="error">0</strong>
+                    {{/if}}
+                </div>
+              </div>
+            {{/with}}
+          {{/pack}}
+          {{#pack list=instance.business_objects na=na id=id}}
+            {{#with list}}
+              <div class="span1 section-item-count">
+                <div class="counter">
+                  <i class="grcicon-object-black"></i>
+                    {{#if length}} 
+                      <span>{{length}}</span>
+                    {{else}}
+                      <strong class="error">0</strong>
+                    {{/if}}
+                </div>
+              </div>
+            {{/with}}
+          {{/pack}}
         </div>
       </a>
     </div>

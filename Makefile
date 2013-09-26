@@ -22,7 +22,7 @@ APPENGINE_REQUIREMENTS_TXT=$(PREFIX)/src/requirements.txt
 $(APPENGINE_SDK_PATH) : $(APPENGINE_ZIP_PATH)
 	@echo $( dirname $(APPENGINE_ZIP_PATH) )
 	cd `dirname $(APPENGINE_SDK_PATH)`; \
-		unzip $(APPENGINE_ZIP_PATH)
+		unzip -o $(APPENGINE_ZIP_PATH)
 	touch $(APPENGINE_SDK_PATH)
 	cd $(APPENGINE_SDK_PATH); \
 		patch -p1 < $(APPENGINE_SQLITE_PATCH_PATH); \

@@ -1,31 +1,139 @@
 {{! dashboard object listing}}
-<ul class="tree-structure new-tree">
+<div class="advanced-filters">
+  <div class="row-fluid">
+    <div class="span3">
+      <select class="input-block-level">
+        <option>Show All Events</option>
+        <option>Mappings</option>
+        <option>Unmappings</option>
+        <option>Updates</option>
+        <option>Creations</option>
+        <option>Deletions</option>
+      </select>
+    </div>
+    <div class="span5">
+      <ul class="filter-date-range">
+        <li>
+          <span>Date Range:</span>
+        </li>
+        <li>
+          <input class="input-small date" name="filter_start_date" data-toggle="datepicker" data-before="filter_end_date" placeholder="MM/DD/YYYY" type="text" value="{{localize_date filter_start_date}}"> - 
+        </li>
+        <li>
+          <input class="input-small date" name="filter_end_date" data-toggle="datepicker" data-after="filter_start_date" placeholder="MM/DD/YYYY" type="text" value="{{localize_date filter_end_date}}">
+        </li>
+      </ul>
+    </div>
+    <div class="span4">
+      <div class="objective-selector">
+        {{#using owner=owner}}
+        <input type="text" name="owner.email" data-lookup="Person" class="span9 audit-selector" value="{{firstnonempty owner.email ''}}">
+        <i class="grcicon-person-green"></i>
+        {{/using}}
+      </div>
+    </div>
+  </div>
+</div>
+<ul class="tree-structure new-tree event-tree">
   {{#list}}
     <li class="tree-item {{resource_type.toLowerCase}}" data-model="true" {{data 'model'}}>
-      <div class="simple-link">
-        <div class="row-fluid">
-          <div class="span12">
-            <div class="item-data">
-              <div class="tree-title-area">
-                <i class="grcicon-{{resource_type.toLowerCase}}-color" rel="tooltip" title="{{resource_type}}"></i>
-                {{#revisions}}
-                  <strong>
-                    {{firstnonempty description display_name}};
-                  </strong>
-                {{/revisions}}
-                <span class="event-owner">
-                  by
-                  {{#modified_by}}
-                    {{email}}
-                  {{/modified_by}}
-                </span>
-                <span class="event-time">
-                  on {{date created_at}}
-                </span>
+      <div class="item-main" {{#instance}}{{data 'model'}}{{/instance}}>
+        <a href="javascript://" class="openclose">
+          <div class="row-fluid">
+            <div class="span12">
+              <div class="item-data">
+                <div class="tree-title-area">
+                  <i class="grcicon-{{resource_type.toLowerCase}}-color" rel="tooltip" title="{{resource_type}}"></i>
+                  {{#revisions}}
+                    <strong>
+                      {{firstnonempty description display_name}};
+                    </strong>
+                  {{/revisions}}
+                  <span class="event-owner">
+                    by
+                    {{#modified_by}}
+                      {{email}}
+                    {{/modified_by}}
+                  </span>
+                  <span class="event-time">
+                    on {{date created_at}}
+                  </span>
+                  <span class="event-more">more...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      
+      <div class="tier-2-info item-content">
+        <div class="tier-2-info-content">
+  
+          <div class="row-fluid">
+  
+            <div class="span6">
+            {{#if instance.viewLink}}
+              <a href="{{instance.viewLink}}" class="info-action">
+                View {{instance.constructor.title_singular}}
+                <i class="grcicon-goto"></i>
+              </a>
+            {{/if}}
+            </div>
+  
+            <div class="span6">
+            {{#if mappings}}
+            {{#is_allowed_all 'delete' mappings}}
+              <a href="javascript://" class="info-action unmap pull-right" data-toggle="unmap">
+                {{#result}}<span class="result" {{data 'result'}}></span>{{/result}}
+                <i class="grcicon-remove"></i>
+                Unmap
+              </a>
+            {{/is_allowed_all}}
+            {{/if}}
+            </div>
+  
+          </div>
+  
+          {{#instance.description}}
+          <div class="show-description">
+            <div class="row-fluid">
+              <div class="span12">
+                <div class="tree-description short">
+                  {{{instance.description}}}
+                </div>
+                {{{show_long}}}
+              </div>
+            </div>
+          </div>
+          {{/instance.description}}
+          
+          <div class="row-fluid">
+            <div class="span6">
+              <div class="tree-info">
+                <strong>Owner:</strong>
+                {{^instance.owner}}
+                  <span class="error">
+                    Not Assigned
+                  </span>
+                {{/instance.owner}}
+                {{#if instance.owner}}
+                  {{#using owner=instance.owner}}
+                  {{owner.name}}
+                  {{/using}}
+                {{/if}}
+              </div>
+            </div>
+            <div class="span6">
+              <div class="tree-info">
+                <strong>URL:</strong>
+                <a class="url" href="{{schemed_url instance.url}}" target="_blank">
+                  {{instance.url}}
+                </a>
               </div>
             </div>
           </div>
         </div>
+  
       </div>
     </li>
   {{/list}}

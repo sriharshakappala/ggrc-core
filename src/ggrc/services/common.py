@@ -22,9 +22,10 @@ from ggrc.login import get_current_user_id
 from ggrc.models.context import Context
 from ggrc.models.event import Event
 from ggrc.models.revision import Revision
-from ggrc.models.exceptions import ValidationError
+from ggrc.models.exceptions import ValidationError, translate_message
 from ggrc.rbac import permissions
 from sqlalchemy import or_
+from sqlalchemy.exc import IntegrityError
 import sqlalchemy.orm.exc
 from werkzeug.exceptions import BadRequest, Forbidden
 from wsgiref.handlers import format_date_time
@@ -53,19 +54,20 @@ def get_cache(create = False):
     logging.warning("No request context - no cache created")
     return None
 
-def log_event(session, obj = None):
+def log_event(session, obj=None, current_user_id=None):
   revisions = []
   session.flush()
-  current_user = get_current_user_id()
+  if current_user_id is None:
+    current_user_id = get_current_user_id()
   cache = get_cache()
   for o in cache.dirty:
-    revision = Revision(o, current_user, 'modified', o.to_json())
+    revision = Revision(o, current_user_id, 'modified', o.to_json())
     revisions.append(revision)
   for o in cache.deleted:
-    revision = Revision(o, current_user, 'deleted', o.to_json())
+    revision = Revision(o, current_user_id, 'deleted', o.to_json())
     revisions.append(revision)
   for o in cache.new:
-    revision = Revision(o, current_user, 'created', o.to_json())
+    revision = Revision(o, current_user_id, 'created', o.to_json())
     revisions.append(revision)
   if obj is None:
     resource_id = 0
@@ -77,7 +79,7 @@ def log_event(session, obj = None):
     action = request.method
   if revisions:
     event = Event(
-      modified_by_id = current_user,
+      modified_by_id = current_user_id,
       action = action,
       resource_id = resource_id,
       resource_type = resource_type)
@@ -281,22 +283,27 @@ class Resource(ModelView):
         and 'X-Requested-By' not in request.headers:
       raise BadRequest('X-Requested-By header is REQUIRED.')
 
-    if method == 'GET':
-      if self.pk in kwargs and kwargs[self.pk] is not None:
-        return self.get(*args, **kwargs)
+    try:
+      if method == 'GET':
+        if self.pk in kwargs and kwargs[self.pk] is not None:
+          return self.get(*args, **kwargs)
+        else:
+          return self.collection_get()
+      elif method == 'POST':
+        if self.pk in kwargs and kwargs[self.pk] is not None:
+          return self.post(*args, **kwargs)
+        else:
+          return self.collection_post()
+      elif method == 'PUT':
+        return self.put(*args, **kwargs)
+      elif method == 'DELETE':
+        return self.delete(*args, **kwargs)
       else:
-        return self.collection_get()
-    elif method == 'POST':
-      if self.pk in kwargs and kwargs[self.pk] is not None:
-        return self.post(*args, **kwargs)
-      else:
-        return self.collection_post()
-    elif method == 'PUT':
-      return self.put(*args, **kwargs)
-    elif method == 'DELETE':
-      return self.delete(*args, **kwargs)
-    else:
-      raise NotImplementedError()
+        raise NotImplementedError()
+    except (IntegrityError, ValidationError) as v:
+      message = translate_message(v)
+      current_app.logger.warn(message)
+      return ((message, 403, []))
 
   def post(*args, **kwargs):
     raise NotImplementedError()
@@ -368,12 +375,7 @@ class Resource(ModelView):
     if new_context != obj.context_id \
         and not permissions.is_allowed_update(self.model.__name__, new_context):
       raise Forbidden()
-    try:
-      self.json_update(obj, src)
-    except ValidationError, v:
-      current_app.logger.warn(v)
-      return ((str(v), 403, []))
-
+    self.json_update(obj, src)
     obj.modified_by_id = get_current_user_id()
     db.session.add(obj)
     log_event(db.session, obj)
@@ -470,11 +472,7 @@ class Resource(ModelView):
       if not permissions.is_allowed_create(
           self.model.__name__, self.get_context_id_from_json(src)):
         raise Forbidden()
-    try:
-      self.json_create(obj, src)
-    except ValidationError, v:
-      current_app.logger.warn(v)
-      return ((str(v), 403, []))
+    self.json_create(obj, src)
     self.model_posted.send(obj.__class__, obj=obj, src=src, service=self)
     obj.modified_by_id = get_current_user_id()
     db.session.add(obj)

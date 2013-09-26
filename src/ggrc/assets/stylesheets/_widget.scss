@@ -595,6 +595,54 @@
   }
 }
 
+.advanced-filters {
+  background: $widgetHeader;
+  border-bottom: 1px solid $widgetBorder;
+  padding: 10px 20px;
+  .row-fluid {
+    [class*="span"] {
+      min-height: 24px;
+    }
+  }
+  .filter-date-range {
+    @include reset-list();
+    li {
+      display: inline-block;
+      span {
+        color: $darkGray;
+      }
+      .input-small {
+        width: 84px;
+      }
+    }
+  }
+  input {
+    line-height: 14px;
+    height: 14px;
+    font-size: 13px;
+    margin-bottom: 0;
+  }
+  select {
+    line-height: 24px;
+    height: 24px;
+    margin-bottom: 0;
+  }
+  .objective-selector {
+    @include clearfix();
+    [class^="grcicon-"] {
+      float: right;
+      margin: 4px 4px 0 0;
+    }
+    input {
+      float: right;
+      line-height: 14px;
+      height: 14px;
+      min-height: 24px;
+      margin-bottom: 0;
+    }
+  }
+}
+
 .widget-filters {
   @include background-image(linear-gradient(top, #eee, $white));
   @include border-radius(4px 0 4px 4px);

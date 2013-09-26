@@ -328,7 +328,6 @@
           $flash_holder.append(html.join(''));
         }
       }
-      //e.stopPropagation();
     });
 
     $('body').on('ajax:html', '.modal > form', function(e, html, xhr) {

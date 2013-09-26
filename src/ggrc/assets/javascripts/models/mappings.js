@@ -210,6 +210,7 @@
       , sections_via_controls: Cross("controls", "sections")
       , sections: Multi(["sections_via_controls", "sections_via_directives"])
 
+      , controls_via_directives: Cross("directives", "controls")
       , controls_via_sections: Cross("sections", "controls")
       , objectives_via_sections: Cross("sections", "objectives")
       , extended_related_objectives: Multi(["objectives_via_sections", "objectives"])
@@ -217,6 +218,7 @@
       , extended_related_controls: Multi([
             "controls_via_extended_objectives"
           , "controls_via_sections"
+          , "controls_via_directives"
           , "controls"])
 
       , related_documents_via_sections: Cross("sections", "documents")
@@ -224,7 +226,8 @@
       , related_documents_via_extended_objectives: Cross("extended_related_objectives", "documents")
       , extended_related_documents:
           Multi([
-              "related_documents_via_extended_controls"
+              "documents"
+            , "related_documents_via_extended_controls"
             , "related_documents_via_extended_objectives"
             , "related_documents_via_sections"
             ])
@@ -234,7 +237,8 @@
       , related_people_via_extended_objectives: Cross("extended_related_objectives", "people")
       , extended_related_people:
           Multi([
-              "related_people_via_extended_controls"
+              "people"
+            , "related_people_via_extended_controls"
             , "related_people_via_extended_objectives"
             , "related_people_via_sections"
             ])

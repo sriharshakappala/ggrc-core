@@ -92,7 +92,7 @@
 
   <li class="tree-item tree-item-add">
     <div class="row-fluid">
-      <div class="span12">
+      <div class="span12 section-expandable">
 
         {{#if_equals parent_instance.constructor.shortName "Program"}}
           <a
@@ -112,22 +112,24 @@
             <a href="javascript://" class="section-add">
               + Control
             </a>
-            <a href="javascript://" class="section-create" data-toggle="modal-ajax-form" data-modal-reset="reset" data-dirty="#category_controls, #combo" data-route="category_controls" data-modal-class="modal-wide" data-object-singular="Control" data-object-plural="controls">
-              <i class="grcicon-add-black"></i>
-              Create Control
-            </a>
-            &nbsp;
-            &nbsp;
-            <a href="{{parent_instance.viewLink}}/import_controls" class="section-import">
-              <i class="grcicon-imp-exp"></i>
-              Import Controls
-            </a>
-            &nbsp;
-            &nbsp;
-            <a href="{{parent_instance.viewLink}}/export_controls" class="section-import">
-              <i class="grcicon-imp-exp"></i>
-              Export Controls
-            </a>
+            <span class="section-expander">
+              <a href="javascript://" class="section-create" data-toggle="modal-ajax-form" data-modal-reset="reset" data-dirty="#category_controls, #combo" data-route="category_controls" data-modal-class="modal-wide" data-object-singular="Control" data-object-plural="controls">
+                <i class="grcicon-add-black"></i>
+                Create Control
+              </a>
+              &nbsp;
+              &nbsp;
+              <a href="{{parent_instance.viewLink}}/import_controls" class="section-import">
+                <i class="grcicon-imp-exp"></i>
+                Import Controls
+              </a>
+              &nbsp;
+              &nbsp;
+              <a href="{{parent_instance.viewLink}}/export_controls" class="section-import">
+                <i class="grcicon-imp-exp"></i>
+                Export Controls
+              </a>
+            </span>
           {{/if_match}}
         {{/if_equals}}
       </div>

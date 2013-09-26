@@ -4,26 +4,28 @@
 {{#is_allowed 'create' model.shortName parent_instance.context.id}}
 <li class="tree-footer tree-item tree-item-add">
   <div class="row-fluid">
-    <div class="span12">
+    <div class="span12 section-expandable">
       <a href="javascript://" class="section-add">
         + {{#if_equals parent_instance.constructor.shortName 'Contract'}}Clause{{else}}Section{{/if_equals}}
       </a>
-      <a href="javascript://" class="section-create" data-toggle="modal-ajax-form" data-modal-reset="reset" data-dirty="#regulations, #combo" data-route="regulations" data-modal-class="modal-wide" data-object-singular="Section" data-object-plural="sections" data-object-singular-override="{{#if_equals parent_instance.constructor.shortName 'Contract'}}Clause{{/if_equals}}" data-object-params='{ "directive": {{parent_instance.id}} }'>
-        <i class="grcicon-add-black"></i>
-        Create {{#if_equals parent_instance.constructor.shortName 'Contract'}}Clause{{else}}Section{{/if_equals}}
-      </a>
-      &nbsp;
-      &nbsp;
-      <a href="{{parent_instance.viewLink}}/import_sections" class="section-import">
-        <i class="grcicon-imp-exp"></i>
-        Import {{#if_equals parent_instance.constructor.shortName 'Contract'}}Clauses{{else}}Sections{{/if_equals}}
-      </a>
-      &nbsp;
-      &nbsp;
-      <a href="{{parent_instance.viewLink}}/export_sections" class="section-import">
-        <i class="grcicon-imp-exp"></i>
-        Export {{#if_equals parent_instance.constructor.shortName 'Contract'}}Clauses{{else}}Sections{{/if_equals}}
-      </a>
+      <span class="section-expander">
+        <a href="javascript://" class="section-create" data-toggle="modal-ajax-form" data-modal-reset="reset" data-dirty="#regulations, #combo" data-route="regulations" data-modal-class="modal-wide" data-object-singular="Section" data-object-plural="sections" data-object-singular-override="{{#if_equals parent_instance.constructor.shortName 'Contract'}}Clause{{/if_equals}}" data-object-params='{ "directive": {{parent_instance.id}} }'>
+          <i class="grcicon-add-black"></i>
+          Create {{#if_equals parent_instance.constructor.shortName 'Contract'}}Clause{{else}}Section{{/if_equals}}
+        </a>
+        &nbsp;
+        &nbsp;
+        <a href="{{parent_instance.viewLink}}/import_sections" class="section-import">
+          <i class="grcicon-imp-exp"></i>
+          Import {{#if_equals parent_instance.constructor.shortName 'Contract'}}Clauses{{else}}Sections{{/if_equals}}
+        </a>
+        &nbsp;
+        &nbsp;
+        <a href="{{parent_instance.viewLink}}/export_sections" class="section-import">
+          <i class="grcicon-imp-exp"></i>
+          Export {{#if_equals parent_instance.constructor.shortName 'Contract'}}Clauses{{else}}Sections{{/if_equals}}
+        </a>
+      </span>
     </div>
   </div>
 </li>

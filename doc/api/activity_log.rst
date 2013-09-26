@@ -17,10 +17,9 @@ is intended to provide a feed of events that occur in GGRC for display to
 users.
 
 An event log resource has a media type of ``application/json`` and is an
-object containing an :ref:`EventLog` object.
+object containing a collection of :ref:`Event` objects.
 
-Example
-=======
+.. rubric:: Example
 
 .. sourcecode:: javascript
 
@@ -30,7 +29,7 @@ Example
             "events": [
                 {
                     "selfLink": "/api/events/6",
-                    "http_method": "POST",
+                    "action": "POST",
                     "modified_by": {
                         "href": "/api/people/79",
                         "type": "Person",
@@ -65,34 +64,17 @@ Event Log Content
    * - Property
      - Type
      - Description
-   * - ``activitylog``
-     - object
-     - Root property for the event log resource, an :ref:`EventLog`
-       object.
-
-.. _EventLog:
-
-EventLog
-===========
-
-.. list-table::
-   :widths: 30 10 60
-   :header-rows: 1
-
-   * - Property
-     - Type
-     - Description
    * - ``selfLink``
      - string
      - The url of this resource.
-   * - ``entries``
+   * - ``events``
      - array
-     - A list of :ref:`ActivityEntry`.
+     - A collection of :ref:`Event` objects.
 
-.. _ActivityEntry:
+.. _Event:
 
-ActivityEntry
--------------
+Event 
+=====
 
 .. list-table::
    :widths: 20 10 70
@@ -103,28 +85,115 @@ ActivityEntry
      - Description
    * - ``selfLink``
      - string
-     - URL of the activity entry resource.
-   * - ``http_method``
-     - string
-     - The HTTP method for the recorded activity.
-   * - ``resourceLink``
-     - string
-     - URL of the resource to which the request was made.
-   * - ``resource_id``
-     - string
-     - ID of the target resource.
+     - The url of the event resource.
+   * - ``modified_by``
+     - resource
+     - The resource link to the person who initiated the request.
    * - ``resource_type``
      - string
-     - Type name of the target resource.
-   * - ``timestamp``
+     - The type of the root object modified by the request.
+   * - ``resource_id``
+     - integer
+     - The id of the root object modified by the request.
+   * - ``created_at``
+     - timestamp
+     - ISO 8601 formatted UTC timestamp indicating the time at which this event happened.
+   * - ``updated_at``
+     - timestamp
+     - ISO 8601 formatted UTC timestamp indicating the time at which this event happened.
+   * - ``action``
      - string
-     - ISO 8601 formatted UTC timestamp indicating the time this activity was
-       performed.
-   * - ``userid``
-     - string
-     - Authenticated User ID on whose behalf the request was performed.
+     - HTTP verb indicating type of the request, or IMPORT, indicating that an import was performed.
+   * - ``context``
+     - int
+     - The RBAC context of the event.
    * - ``revisions``
      - array
-     - List of :ref:`RevisionEntry` for resources modified as part of the
-       transaction satisfying the request.
+     - A collection of :ref:`Revision` objects.
+
+.. _Revision:
+
+Revision
+========
+
+.. rubric:: Example
+
+.. sourcecode:: javascript
+
+  {
+      "revision": {
+          "modified_by": {
+              "href": "/api/people/1",
+              "type": "Person",
+              "id": 1
+          },
+          "description": "My Program created",
+          "resource_id": 1,
+          "created_at": "2013-09-18T12:15:04",
+          "updated_at": "2013-09-18T12:15:04",
+          "content": {
+              "kind": "Directive",
+              "display_name": "My Program",
+              "description": "",
+              "end_date": null,
+              "title": "My Program",
+              "url": "",
+              "context_id": null,
+              "created_at": "2013-09-18T12:15:04",
+              "updated_at": "2013-09-18T12:15:04",
+              "start_date": null,
+              "scope": "",
+              "modified_by_id": 1,
+              "id": 1,
+              "organization": "",
+              "slug": "PROGRAM-1",
+              "owner_id": null
+          },
+          "resource_type": "Program",
+          "context": null,
+          "action": "created",
+          "id": 1,
+          "selfLink": "/api/revisions/1"
+      }
+  }
+
+
+.. list-table::
+   :widths: 20 10 70
+   :header-rows: 1
+
+   * - Property
+     - Type
+     - Description
+   * - ``selfLink``
+     - string
+     - The url of the revision resource.
+   * - ``modified_by``
+     - resource
+     - The resource link to the person who initiated the request.
+   * - ``resource_type``
+     - string
+     - The type of the root object modified by the request.
+   * - ``resource_id``
+     - integer
+     - The id of the root object modified by the request.
+   * - ``created_at``
+     - timestamp
+     - ISO 8601 formatted UTC timestamp indicating the time at which this event happened.
+   * - ``updated_at``
+     - timestamp
+     - ISO 8601 formatted UTC timestamp indicating the time at which this event happened.
+   * - ``action``
+     - string
+     - The nature of the change made - 'created', 'modified', or 'deleted'.
+   * - ``context``
+     - int
+     - The RBAC context of the event.
+   * - ``description``
+     - string
+     - A textual description of the change that was made.
+   * - ``content``
+     - string
+     - A JSON representation of the current state of the database row enumerating all the columns and their values. In the case of a DELETE, this is the
+       last state of the database row before the DELETE.
 

@@ -20,3 +20,6 @@ class DirectiveControl(Base, db.Model):
       'directive',
       'control',
       ]
+
+  def _display_name(self):
+    return self.directive.display_name + '<->' + self.control.display_name

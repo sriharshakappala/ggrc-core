@@ -4,6 +4,9 @@
 from ggrc import db
 from ggrc.models.context import Context
 from ggrc.models.person import Person
+from ggrc.fulltext import get_indexer
+from ggrc.fulltext.recordbuilder import fts_record_for
+from ggrc.services.common import log_event
 
 def _base_user_query():
   from sqlalchemy import orm
@@ -23,7 +26,8 @@ def find_user_by_email(email):
 def create_user(email, **kwargs):
   user = Person(email=email, **kwargs)
   db.session.add(user)
-  db.session.commit()
+  db.session.flush()
+  log_event(db.session, user, user.id)
   user_context = Context(
       name='Personal Context for {0}'.format(email),
       description='',
@@ -32,6 +36,7 @@ def create_user(email, **kwargs):
       )
   db.session.add(user_context)
   db.session.commit()
+  get_indexer().create_record(fts_record_for(user))
   return user
 
 def find_or_create_user_by_email(email, **kwargs):

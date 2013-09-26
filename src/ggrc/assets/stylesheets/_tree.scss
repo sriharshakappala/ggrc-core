@@ -18,6 +18,13 @@ ul.new-tree {
     }
     
   }
+  &.event-tree {
+    a.openclose {
+      &.active {
+        font-weight: normal;
+      }
+    }
+  }
   
   a.simple-link {
     .row-fluid {
@@ -127,6 +134,10 @@ ul.new-tree {
           text-decoration:none;
         }
       }
+    .section-item-count {
+      float: right;
+      max-width: 3.5em;
+      margin-left: 0.5em;
     }
   }
   li.tree-item-add {
@@ -362,6 +373,12 @@ ul.new-tree {
       font-size:13px;
       color:#777;
     }
+    .event-more {
+      float: right;
+      color: $blue;
+      margin-right: 20px;
+      font-size: 13px;
+    }
 
   }
   .tree-code {
@@ -397,21 +414,22 @@ ul.new-tree {
   @include opacity(0.5);
 }
 
-.objective-create {
-  display:none;
-}
-
-.section-create,
-.section-import {
-  display:none;
-  i {
-    @include opacity(0.3);
-  }
-  &:hover {
-   text-decoration:none;
-   i {
-     @include opacity(0.6);
-   } 
+.section-expandable {
+  position:relative;
+  .section-expander {
+    display:none;
+    position:absolute;
+    left:0;
+    top:0;
+    i {
+      @include opacity(0.3);
+    }
+    &:hover {
+     text-decoration:none;
+     i {
+       @include opacity(0.6);
+     } 
+    }
   }
 }
 

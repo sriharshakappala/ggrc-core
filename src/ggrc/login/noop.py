@@ -7,9 +7,6 @@ import flask_login
 import json
 from flask import url_for, redirect, request, session
 
-from ggrc.login.common import find_or_create_user_by_email, get_next_url
-
-
 def get_user():
   if 'X-ggrc-user' in request.headers:
     json_user = json.loads(request.headers['X-ggrc-user'])
@@ -23,6 +20,7 @@ def get_user():
     name = 'Example User'
     permissions = None
     header_override = False
+  from ggrc.login.common import find_or_create_user_by_email
   user = find_or_create_user_by_email(
     email=email,
     name=name)
@@ -32,11 +30,13 @@ def get_user():
   return user
 
 def login():
+  from ggrc.login.common import get_next_url
   user = get_user()
   flask_login.login_user(user)
   return redirect(get_next_url(request, default_url=url_for('dashboard')))
 
 def logout():
+  from ggrc.login.common import get_next_url
   if 'permissions' in session:
     del session['permissions']
   flask_login.logout_user()

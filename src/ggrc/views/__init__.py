@@ -170,7 +170,7 @@ def import_controls(directive_id):
 
   if request.method == 'POST':
     if 'cancel' in request.form:
-      return import_redirect(directive_url)
+      return import_redirect(directive_url + "#control_widget")
     dry_run = not ('confirm' in request.form)
     csv_file = request.files['file']
     try:
@@ -188,7 +188,7 @@ def import_controls(directive_id):
         else:
           count = len(converter.objects)
           flash(u'Successfully imported {} control{}'.format(count, 's' if count > 1 else ''), 'notice')
-          return import_redirect(directive_url)
+          return import_redirect(directive_url + "#control_widget")
       else:
         file_msg = "Could not import: invalid csv file."
         return render_template("directives/import_errors.haml",
@@ -218,7 +218,7 @@ def import_sections(directive_id):
   if request.method == 'POST':
 
     if 'cancel' in request.form:
-      return import_redirect(directive_url)
+      return import_redirect(directive_url + "#section_widget")
     dry_run = not ('confirm' in request.form)
     csv_file = request.files['file']
     try:
@@ -233,7 +233,7 @@ def import_sections(directive_id):
         else:
           count = len(converter.objects)
           flash(u'Successfully imported {} section{}'.format(count, 's' if count > 1 else ''), 'notice')
-          return import_redirect(directive_url)
+          return import_redirect(directive_url + "#section_widget")
       else:
         file_msg = "Could not import: invalid csv file."
         return render_template("directives/import_errors.haml",

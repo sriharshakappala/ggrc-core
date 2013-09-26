@@ -497,8 +497,7 @@ $(function() {
 
       can.each(mappings, function(mapping) {
         mapping.refresh().done(function() {
-          if (mapping instanceof CMS.Models.Control
-              && GGRC.page_instance() instanceof CMS.Models.Directive) {
+          if (mapping instanceof CMS.Models.Control) {
             mapping.removeAttr('directive');
             mapping.save();
           }
@@ -553,6 +552,12 @@ $(function() {
               ].join(" ")
             }
         );
+
+      // Switch the active widget view
+      if (type !== "error") {
+        window.location.hash = '#' + inst.constructor.root_object + '_widget';
+        $('a[href="' + window.location.hash + '"]').trigger("click");
+      }
     }
 
     /*if(can.isPlainObject(link)) {

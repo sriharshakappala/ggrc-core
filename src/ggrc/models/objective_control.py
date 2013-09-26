@@ -20,3 +20,6 @@ class ObjectiveControl(Base, db.Model):
       'objective',
       'control',
       ]
+
+  def _display_name(self):
+    return self.objective.display_name + '<->' + self.control.display_name

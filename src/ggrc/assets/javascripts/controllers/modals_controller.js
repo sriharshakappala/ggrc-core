@@ -212,6 +212,11 @@ can.Control("GGRC.Controllers.Modals", {
   }
 
   , draw : function(content, header, footer) {
+    // Don't draw if this has been destroyed previously
+    if (!this.element) {
+      return;
+    }
+
     can.isArray(content) && (content = content[0]);
     can.isArray(header) && (header = header[0]);
     can.isArray(footer) && (footer = footer[0]);
@@ -230,6 +235,11 @@ can.Control("GGRC.Controllers.Modals", {
 
   , "input, textarea, select change" : function(el, ev) {
       this.set_value_from_element(el);
+  }
+
+  , "input, textarea, select keyup" : function(el, ev) {
+      if ($(el).is(':not([name="owner.email"])') || !$(el).val())
+        this.set_value_from_element(el);
   }
 
   , serialize_form : function() {
@@ -366,6 +376,8 @@ can.Control("GGRC.Controllers.Modals", {
   , " ajax:flash" : function(el, ev, mesg) {
     var that = this;
     this.options.$content.find(".flash").length || that.options.$content.prepend("<div class='flash'>");
+
+    ev.stopPropagation();
 
     can.each(["success", "warning", "error"], function(type) {
       var tmpl;

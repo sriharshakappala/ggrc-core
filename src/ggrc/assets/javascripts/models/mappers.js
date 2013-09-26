@@ -67,10 +67,17 @@
       }
 
     , get_mappings: function() {
-        var mappings = [];
+        var self = this
+          , mappings = []
+          ;
+
         this.walk_instances(function(instance, result, depth) {
-          if (depth == 1)
-            mappings.push(instance);
+          if (depth == 1) {
+            if (instance === true)
+              mappings.push(self.instance);
+            else
+              mappings.push(instance);
+          }
         });
         return mappings;
       }
@@ -716,8 +723,8 @@
           , mappings: [{
                 instance: mapping
               , mappings: [{
-                    instance: binding.instance
-                  , mappings: true
+                    instance: true
+                  , mappings: []
                   }]
               , binding: binding
               }]
@@ -858,8 +865,8 @@
         return this.make_result({
             instance: mapping
           , mappings: [{
-                instance: binding.instance
-              , mappings: true
+                instance: true
+              , mappings: []
               }]
           , binding: binding
           });

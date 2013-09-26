@@ -11,12 +11,12 @@ backends
 
 import flask_login
 from ggrc.extensions import get_extension_module_for
-from .common import find_user_by_id
 
 def get_login_module():
   return get_extension_module_for('LOGIN_MANAGER', False)
 
 def user_loader(id):
+  from .common import find_user_by_id
   return find_user_by_id(id)
 
 def init_app(app):
