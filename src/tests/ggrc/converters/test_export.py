@@ -8,11 +8,12 @@ from os.path import abspath, dirname, join
 
 from mock import patch
 
+from ggrc import db
 from ggrc.converters.import_helper import handle_converter_csv_export
 from ggrc.converters.controls import ControlsConverter
-from ggrc.models.control import Control
-from ggrc.models.directive import Policy
+from ggrc.models import Category, Control, Policy, ObjectControl, Option, System
 from tests.ggrc import TestCase
+
 
 THIS_ABS_PATH = abspath(dirname(__file__))
 CSV_DIR = join(THIS_ABS_PATH, 'comparison_csvs/')
@@ -71,4 +72,57 @@ class TestExport(TestCase):
         self.expected_status_code,
         self.expected_headers,
     ))
-    self.assertEquals(pol1, cont1.directive)
+
+  @patch("ggrc.converters.import_helper.current_app.make_response")
+  def test_mappings(self, mock_response):
+    with open(join(CSV_DIR, "mappings_export.csv"), "r") as f:
+      expected_csv = f.read()
+    sample_day = datetime(2013, 9, 25)
+    #pol1 = PolicyFactory(
+    pol1 = Policy(
+      kind="Company Policy",
+      title="Example Policy 3",
+      description="Example Description",
+      slug="POL-123",
+      url="http://example.com/policy/3",
+    )
+    cont1 = Control(
+      directive=pol1,
+      title="Complex Control 2",
+      slug="CTRL-2345",
+      description="Example Complex Control",
+      company_control=True,
+      fraud_related="1",
+      key_control="1",
+      notes="These are the notes on the example control.",
+      url="http://example.com/control/3",
+      created_at=sample_day,
+      updated_at=sample_day,
+    )
+    cat1 = Category(name="Governance")
+    cat2 = Category(name="Authorization")
+    sys1 = System(slug="ACLS", title="System1")
+    ob_cont1 = ObjectControl(
+        controllable=sys1,
+        control=cont1,
+    )
+    cont1.object_controls.append(ob_cont1)
+    db.session.add(cont1)
+    db.session.commit()
+    cont1.categories.append(cat1)
+    cont1.categories.append(cat2)
+    options = {'directive': pol1, 'export': True}
+    handle_converter_csv_export(
+        self.csv_filename,
+        pol1.controls,
+        ControlsConverter,
+        **options
+    )
+    args, kwargs = mock_response.call_args
+    #with open(join(CSV_DIR, "test_out.csv"), "w") as f:
+    #    f.write(args[0][0])
+    mock_response.assert_called_once_with((
+        expected_csv,
+        self.expected_status_code,
+        self.expected_headers,
+    ))

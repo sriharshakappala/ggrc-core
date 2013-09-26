@@ -5,7 +5,7 @@ SCRIPTPATH=$( cd "$(dirname "$0")" ; pwd -P )
 cd "${SCRIPTPATH}/../src"
 if [ ! -z "$1" ]  # if first argument given
 then
-    unittest_arg="nosetests $1"
+    unittest_arg="python -m unittest $1"
 else  # otherwise run all tests
     unittest_arg="python -m unittest discover"
 fi
