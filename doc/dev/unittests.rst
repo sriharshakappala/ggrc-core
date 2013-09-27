@@ -18,11 +18,13 @@ To attach Controls to Systems:
 Expected Behavior Clarification
 -------------------
 
-..
+Exporting: “Map:” columns can have multiple \n-delimited entries per row, one for each thing that they map to.
+
+Importing: With controls, the spreadsheet should indicate which policy it is associated with in the top two lines.  If a control code already exists, its updated withe the data from the new sheet.  If it does not exist, it is created.
 
 
 Problems
 -------------------
 
-..
+SqlAlchemy throws a warning when start/end dates are empty, even though this is expected behavior and should simply leave those values as null.
 
