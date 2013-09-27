@@ -21,13 +21,13 @@ CSV_DIR = join(THIS_ABS_PATH, 'comparison_csvs/')
 
 class TestImport(TestCase):
   def setUp(self):
-    self.csv_filename = join(CSV_DIR, "minimal_export.csv")
     super(TestImport, self).setUp()
 
   def tearDown(self):
     super(TestImport, self).tearDown()
 
   def test_simple(self):
+    csv_filename = join(CSV_DIR, "minimal_export.csv")
     expected_titles = set([
       "Minimal Control 1",
       "Minimal Control 2",
@@ -36,7 +36,6 @@ class TestImport(TestCase):
       "CTRL-1",
       "CTRL-2",
     ])
-    sample_day = datetime(2013, 9, 25)
     pol1 = Policy(
       kind="Company Policy",
       title="Example Policy",
@@ -47,7 +46,44 @@ class TestImport(TestCase):
     options = {'directive_id': pol1.id, 'dry_run': False}
     handle_csv_import(
         ControlsConverter,
-        self.csv_filename,
+        csv_filename,
+        **options
+    )
+    actual_titles = set()
+    actual_slugs = set()
+    for control in pol1.controls:
+      actual_titles.add(control.title)
+      actual_slugs.add(control.slug)
+    self.assertEqual(
+        expected_titles,
+        actual_titles,
+        "Control titles not imported correctly"
+    )
+    self.assertEqual(
+        expected_slugs,
+        actual_slugs,
+        "Control slugs not imported correctly"
+    )
+
+  def test_mappings(self):
+    expected_titles = set([
+      "Complex Control 2",
+    ])
+    expected_slugs = set([
+      "CTRL-2345",
+    ])
+    csv_filename = join(CSV_DIR, "mappings_import.csv")
+    pol1 = Policy(
+      kind="Company Policy",
+      title="Example Policy",
+      slug="POL-123",
+    )
+    db.session.add(pol1)
+    db.session.commit()
+    options = {'directive_id': pol1.id, 'dry_run': False}
+    handle_csv_import(
+        ControlsConverter,
+        csv_filename,
         **options
     )
     actual_titles = set()
