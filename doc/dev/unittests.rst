@@ -29,6 +29,7 @@ Exporting: “Map:” columns can have multiple \n-delimited entries per row, on
 
 Importing: With controls, the spreadsheet should indicate which policy it is associated with in the top two lines.  If a control code already exists, its updated withe the data from the new sheet.  If it does not exist, it is created.
 
+Re-exporting: The re-export ("consistency") test, given that it imports, requires mapped objects to already exist, so if the imported csv has such items, they must already be declared to exist and given matching slug names.
 
 Problems
 -------------------
