@@ -119,8 +119,6 @@ class TestExport(TestCase):
         **options
     )
     args, kwargs = mock_response.call_args
-    #with open(join(CSV_DIR, "test_out.csv"), "w") as f:
-    #    f.write(args[0][0])
     mock_response.assert_called_once_with((
         expected_csv,
         self.expected_status_code,
