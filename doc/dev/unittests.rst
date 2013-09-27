@@ -41,19 +41,16 @@ Useful Mock/Patch Tricks
 
 To cut off and capture a call within a file being tested (so that it is not executed and you can examine what arguments were passed to it), use a patch decorator and represent the called object by an additional argument in the test function.  For example, if you want to "patch out" the call to ``foo.bar()`` which is invoked in the module ``baz1.baz2.quux`` when executing the test ``test_method``, it should begin as follows:
 
-::
   from mock import patch
   @patch('baz1.baz2.quux.foo.bar')
   def test_method(self, mocked_object):
 
 You can then test that it has received calls with particular arguments:
 
-::
   mocked_object.assert_called_once_with(arg1, arg2, ...)
 
 You may also find it useful, when debugging tests, to inspect the arguments that are passed.  The method ``.mock_calls`` returns a list of calls, from which a tuple of the function name, arg tuple, and keyword arg dict can be extracted.  If you want to extract out the values for the first call, you may find this idiom helpful:
 
-::
   function_name, args, kwargs = mocked_object.mock_calls[0]
 
 Then the arguments can be accessed by index in the variable ``args``, or by key in the dict ``kwargs``.
