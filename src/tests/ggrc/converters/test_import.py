@@ -21,7 +21,7 @@ CSV_DIR = join(THIS_ABS_PATH, 'comparison_csvs/')
 
 class TestImport(TestCase):
   def setUp(self):
-    self.csv_filename = "dummy_filename.csv"
+    self.csv_filename = join(CSV_DIR, "minimal_export.csv")
     super(TestImport, self).setUp()
 
   def tearDown(self):
@@ -47,7 +47,7 @@ class TestImport(TestCase):
     options = {'directive_id': pol1.id, 'dry_run': False}
     handle_csv_import(
         ControlsConverter,
-        join(CSV_DIR, "minimal_export.csv"),
+        self.csv_filename,
         **options
     )
     actual_titles = set()
@@ -55,7 +55,6 @@ class TestImport(TestCase):
     for control in pol1.controls:
       actual_titles.add(control.title)
       actual_slugs.add(control.slug)
-    # note: dates not tested
     self.assertEqual(
         expected_titles,
         actual_titles,
