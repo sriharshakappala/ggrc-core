@@ -43,21 +43,31 @@
             <div class="span12">
               <div class="item-data">
                 <div class="tree-title-area">
-                  <i class="grcicon-{{resource_type.toLowerCase}}-color" rel="tooltip" title="{{resource_type}}"></i>
-                  {{#revisions}}
-                    <strong>
-                      {{firstnonempty description display_name}};
-                    </strong>
-                  {{/revisions}}
-                  <span class="event-owner">
-                    by
-                    {{#modified_by}}
-                      {{email}}
-                    {{/modified_by}}
-                  </span>
-                  <span class="event-time">
-                    on {{date created_at}}
-                  </span>
+                  <ul>
+                    <li class="event-icon">
+                      <i class="grcicon-{{resource_type.toLowerCase}}-color" rel="tooltip" title="{{resource_type}}"></i>
+                    </li>
+                    {{#revisions}}
+                    <li>
+                      <strong>
+                        {{firstnonempty description display_name}}
+                      </strong>
+                    </li>
+                    {{/revisions}}
+                    <li>
+                      <span class="event-owner">
+                        by
+                        {{#modified_by}}
+                          {{email}}
+                        {{/modified_by}}
+                      </span>
+                    </li>
+                    <li>
+                      <span class="event-time">
+                        on {{date created_at}}
+                      </span>
+                    </li>
+                  </ul>
                   <span class="event-more">more...</span>
                 </div>
               </div>

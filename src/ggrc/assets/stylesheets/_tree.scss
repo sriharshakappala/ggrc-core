@@ -19,9 +19,91 @@ ul.new-tree {
     
   }
   &.event-tree {
+    [class^="grcicon-"] {
+      margin-top: 1px;
+    }
     a.openclose {
       &.active {
         font-weight: normal;
+      }
+    }
+    .view-more-paging {
+      line-height: 31px;
+      min-height: 31px;
+      padding-left: 20px;
+      [class^="grcicon-"] {
+        margin-top: 7px;
+      }
+    }
+    .item-data {
+      padding-right: 20px;
+      .tree-title-area {
+        position: relative;
+        overflow: auto;
+        white-space: normal;
+        text-overflow: inherit;
+        width: auto;
+        padding-right: 50px;
+        ul {
+          @include reset-list();
+          li {
+            display: inline-block;
+            margin-right: 10px;
+            line-height: 18px;
+            &:last-child {
+              margin-right: 0;
+            }
+            &.event-icon {
+              margin-right: 0;
+            }
+            .event-action {
+              font-size:13px;
+              color:#777;
+            }
+            &.governance,
+            &.control,
+            &.objective,
+            &.contract,
+            &.policy,
+            &.regulation {
+              color:$governance;
+            }
+            &.business,
+            &.process,
+            &.system,
+            &.orggroup,
+            &.project,
+            &.facility,
+            &.product,
+            &.dataasset,
+            &.market {
+              color:$business;
+            }
+            &.risk,
+            &.riskyattribute {
+              color:$risk;
+            }
+            &.program {
+              color:$programs;
+            }
+          }
+        }
+        .event-more {
+          position: absolute;
+          top: 0;
+          right: 0px;
+          z-index: 2000;
+        }
+      }
+    }
+    .events-content {
+      [class^="grcicon-"] {
+        margin-top: 7px;
+      }
+      .info-action {
+        text-transform: none;
+        font-size: 12px;
+        @include opacity(1);
       }
     }
   }
@@ -377,7 +459,7 @@ ul.new-tree {
     .event-more {
       float: right;
       color: $blue;
-      margin-right: 20px;
+      margin-right: 0;
       font-size: 13px;
     }
 
