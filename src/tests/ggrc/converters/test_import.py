@@ -11,7 +11,7 @@ from mock import patch
 from ggrc import db
 from ggrc.converters.import_helper import handle_csv_import
 from ggrc.converters.controls import ControlsConverter
-from ggrc.models import Policy
+from ggrc.models import Control, Category, Policy, System
 from tests.ggrc import TestCase
 
 
@@ -66,6 +66,10 @@ class TestImport(TestCase):
     )
 
   def test_mappings(self):
+    sys1 = System(slug="ACLS", title="System1")
+    sys2 = System(slug="SLCA", title="System2")
+    db.session.add(sys1)
+    db.session.add(sys2)
     expected_titles = set([
       "Complex Control 2",
     ])
@@ -101,3 +105,13 @@ class TestImport(TestCase):
         actual_slugs,
         "Control slugs not imported correctly"
     )
+    systems = System.query.all()
+    for system in systems:
+      self.assertEqual(
+          system.controls,
+          pol1.controls,
+          "System {0} not connected to controls on import".format(
+              system.slug
+          ),
+      )
+
