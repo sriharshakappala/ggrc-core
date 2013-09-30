@@ -36,6 +36,15 @@ Problems
 
 SqlAlchemy throws a warning when start/end dates are empty, even though this is expected behavior and should simply leave those values as null.
 
+Testing re-exports: There is a small testability issue in the spreadsheets: the expected behavior is that, on import, it ignores the user's purpoted created/updated fields in favor of the actual date on which the file was imported.  Thus, there is no guarantee that (in this respect) the imported and re-exported files will match.  There are three possible ways around this for the purpose of unit testing:
+
+A) Mock out the ``datetime.now()`` where it is invoked in export so that it will think that today is the same as the date in the same import sheet.
+
+B) Have the test compare the imported and re-exported spreadsheets in a way that ignores the created/updated entries.
+
+C) Dynamically generate the sample import sheet so that its date is the same as the current date.
+
+Currently, method B is used, for which the ``helpers.py`` file is created.
 
 Useful Mock/Patch Tricks
 -------------------
