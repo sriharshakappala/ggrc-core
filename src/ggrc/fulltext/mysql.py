@@ -84,8 +84,6 @@ class MysqlIndexer(SqlIndexer):
 
   def search(
       self, terms, types=None, permission_type='read', permission_model=None):
-    print 'search permission_type:', permission_type, 'permission_model',\
-        permission_model
     query = self._get_type_query(types, permission_type, permission_model)
     query = and_(query, self._get_filter_query(terms))
     return db.session.query(self.record_type).filter(query)

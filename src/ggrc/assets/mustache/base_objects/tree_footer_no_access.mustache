@@ -1,0 +1,9 @@
+{{^is_allowed 'read' model.shortName}}
+<li class="tree-footer tree-item tree-item-add">
+  <div class="row-fluid">
+    <div class="span12">
+      You do not have access to read this information.
+    </div>
+  </div>
+</li>
+{{/is_allowed}}

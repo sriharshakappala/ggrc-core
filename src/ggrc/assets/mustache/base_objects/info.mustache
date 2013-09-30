@@ -26,12 +26,14 @@
     {{/if}}
     {{/using}}
   </p>
+  {{#is_allowed 'update' model.shortName}}
   <p>
     <a href="javascript://" class="info-edit" data-toggle="modal-ajax-form" data-object-plural="{{model.table_plural}}" data-object-singular="{{model.model_singular}}" data-modal-reset="reset" data-modal-class="modal-wide" title="Edit {{model.model_title}}" data-object-id="page">
       <i class="grcicon-edit"></i>
       <span>Edit {{model.model_title}}</span>
     </a>
   </p>
+  {{/is_allowed}}
   <p>
     <small>Code: {{slug}} | Created: {{date created_at}}</small>
   </p>

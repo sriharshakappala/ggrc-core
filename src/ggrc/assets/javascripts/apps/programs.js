@@ -215,15 +215,15 @@ function collated_user_roles_by_person(user_roles) {
     var found = false;
     can.each(person_roles, function(data, index) {
       if (user_role.person.id == data.person.id) {
-        person_roles.attr(index).attr('roles').push(user_role.role);
+        person_roles.attr(index).attr('roles').push(user_role.role.reify());
         refresh_queue.enqueue(user_role.role);
         found = true;
       }
     });
     if (!found) {
       person_roles.push({
-        person: user_role.person,
-        roles: [user_role.role]
+        person: user_role.person.reify(),
+        roles: [user_role.role.reify()]
       });
       refresh_queue.enqueue(user_role.person);
       refresh_queue.enqueue(user_role.role);
@@ -238,7 +238,7 @@ function collated_user_roles_by_person(user_roles) {
     can.each(person_roles, function(data, index) {
       if (user_role.person.id == data.person.id) {
         roles = person_roles.attr(index).attr('roles');
-        role_index = roles.indexOf(user_role.role);
+        role_index = roles.indexOf(user_role.role.reify());
         if (role_index > -1) {
           roles.splice(role_index, 1);
           if (roles.length == 0)

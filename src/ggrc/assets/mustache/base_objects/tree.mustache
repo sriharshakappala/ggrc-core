@@ -68,7 +68,9 @@
           </div>
         </div>
         {{/instance.description}}
-        
+
+        {{{render '/static/mustache/base_objects/mappings_detail.mustache' result=result parent_instance=parent_instance}}}
+
         <div class="row-fluid">
           <div class="span6">
             <div class="tree-info">

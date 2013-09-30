@@ -190,6 +190,9 @@ class BaseConverter(object):
   def save_import(self):
     for row_converter in self.objects:
       row_converter.save(db.session, **self.options)
+    db.session.flush()
+    for row_converter in self.objects:
+      row_converter.run_after_save_hooks(db.session, **self.options)
     modified_objects = get_modified_objects(db.session)
     log_event(db.session)
     db.session.commit()

@@ -99,9 +99,11 @@ dashboard-js-template-files:
   - base_objects/extended_info.mustache
   - base_objects/info.mustache
   - base_objects/map_related_modal_content.mustache
+  - base_objects/mappings_detail.mustache
   - base_objects/page_header.mustache
   - base_objects/search_result.mustache
   - base_objects/tree.mustache
+  - base_objects/tree_footer_no_access.mustache
   - contracts/modal_content.mustache
   - controls/categories_tree.mustache
   - controls/list_popover.mustache

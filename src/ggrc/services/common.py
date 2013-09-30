@@ -136,12 +136,21 @@ class ModelView(View):
         query = query.options(*options)
     if filter_by_contexts:
       contexts = permissions.read_contexts_for(self.model.__name__)
+      filter_expr = None
+      if contexts is not None and None in contexts:
+        filter_expr = self.model.context_id == None
+        contexts.remove(None)
       if contexts is not None and len(contexts) > 0:
-        query = query.filter(or_(
-          self.model.context_id.in_(contexts),
-          self.model.context_id == None))
-      elif contexts is not None:
-        query = query.filter(self.model.context_id == None)
+        filter_in_expr = self.model.context_id.in_(contexts)
+        if filter_expr is not None:
+          filter_expr = or_(filter_expr, filter_in_expr)
+        else:
+          filter_expr = filter_in_expr
+      elif contexts is not None and not filter_expr:
+        # No context should match.
+        filter_expr = self.model.context_id == -1
+      if filter_expr is not None:
+        query = query.filter(filter_expr)
       for j in joinlist:
         j_class = j.property.mapper.class_
         j_contexts = permissions.read_contexts_for(j_class.__name__)
@@ -464,8 +473,13 @@ class Resource(ModelView):
     except KeyError, e:
       return current_app.make_response((
         'Required attribute "{0}" not found'.format(root_attribute), 400, []))
-    if 'private' in src:
-      pass
+    if not permissions.is_allowed_create(
+        self.model.__name__, self.get_context_id_from_json(src)):
+      raise Forbidden()
+    if src.get('private') == True and src.get('context') is not None \
+        and src['context'].get('id') is not None:
+      raise BadRequest(
+        'context MUST be "null" when creating a private resource.')
     elif 'context' not in src:
       raise BadRequest('context MUST be specified.')
     else:
@@ -554,6 +568,7 @@ class Resource(ModelView):
     paging_obj['first'] = page_url(page_args(1, paging.per_page))
     paging_obj['last'] = page_url(page_args(paging.pages, paging.per_page))
     paging_obj['count'] = paging.pages
+    paging_obj['total'] = paging.total
     return paging_obj
 
   def build_collection_for_json(

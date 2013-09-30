@@ -116,23 +116,21 @@ class BaseRowConverter(object):
     return self.obj
 
   def save(self, db_session, **options):
-    self.save_object(db_session, **self.options)
-    self.run_after_save_hooks(self.obj)
+    self.save_object(db_session, **options)
 
   def add_after_save_hook(self, hook = None, funct = None):
     if hook: self.after_save_hooks.append(hook)
     if funct and callable(funct): self.after_save_hooks.append(funct)
 
-  def run_after_save_hooks(self, obj):
+  def run_after_save_hooks(self, db_session, **options):
     for hook in self.after_save_hooks:
-      if self.responds_to_after_save(hook):
-        hook.after_save(obj)
-      elif callable(hook):
-        hook(obj)
-      elif isinstance(hook, basestring):
-        self.hook(obj)
+      if callable(getattr(hook, 'after_save', None)):
+        hook.after_save(self.obj)
       else:
         raise ImportException
+
+    if callable(getattr(self, 'after_save', None)):
+      self.after_save(db_session, **options)
 
   def responds_to_after_save(self, hook):
     if hasattr(hook, 'after_save'):
@@ -725,11 +723,6 @@ class LinkRelationshipsHandler(LinksHandler):
       self.model_human_name(), data.get('slug')))
 
   def after_save(self, obj):
-    # Flushing here because the setter for source/destination
-    # requires that the object.id be available
-    if not self.importer.obj.id:
-      db.session.flush()
-
     for linked_object in self.created_links():
       db.session.add(linked_object)
       relationship = Relationship()
@@ -777,11 +770,6 @@ class LinkObjectControl(LinksHandler):
       model_class.__name__, data.get('slug')))
 
   def after_save(self, obj):
-    # Flushing here because the controllable setter
-    # makes use of an existing id on the object
-    if not self.importer.obj.id:
-      db.session.flush()
-
     for linked_object in self.created_links():
       db.session.add(linked_object)
       object_control = ObjectControl()

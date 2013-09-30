@@ -25,6 +25,11 @@
 <li class="spinner">
 </li>
 {{/list}}
+{{^is_allowed 'read' model.shortName context=null}}
+<li class="no-access">
+  You do not have access to read this information.
+</li>
+{{/is_allowed}}
 {{^if_equals list.length count}}
 <li class="view-more">
   <a href="javascript://">
@@ -33,8 +38,10 @@
   </a>
 </li>
 {{/if_equals}}
+{{#is_allowed 'create' model.shortName}}
 <li class="add-new">
   <a data-object-plural="{{model.table_plural}}" data-modal-class="modal-wide" href="javascript://" data-object-singular="{{model.model_singular}}" data-toggle="modal-ajax-form" data-modal-reset="reset" >
     + Create New
   </a>
 </li>
+{{/is_allowed}}

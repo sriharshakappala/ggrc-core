@@ -179,6 +179,11 @@ can.Control("GGRC.Controllers.Modals", {
   }
 
   , draw : function(content, header, footer) {
+    // Don't draw if this has been destroyed previously
+    if (!this.element) {
+      return;
+    }
+
     can.isArray(content) && (content = content[0]);
     can.isArray(header) && (header = header[0]);
     can.isArray(footer) && (footer = footer[0]);

@@ -20,5 +20,3 @@ make deploy \
 	SETTINGS_MODULE="${SETTINGS_MODULE}" \
 	DATABASE_URI="${DATABASE_URI}" \
 	BOOTSTRAP_ADMIN_USERS="${BOOTSTRAP_ADMIN_USERS}"
-
-appcfg.py --oauth2 update src/

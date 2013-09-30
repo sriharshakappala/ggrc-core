@@ -321,6 +321,9 @@ GGRC.RELATIONSHIP_TYPES = RELATIONSHIP_TYPES;
 
   directive_object_types = ["Regulation", "Policy", "Contract"];
 
+  business_plus_program_and_directive_object_types =
+    business_plus_program_object_types.concat(directive_object_types);
+
   governance_object_types =
     directive_object_types.concat(["Control", "Section", "Objective"]);
 
@@ -332,14 +335,18 @@ GGRC.RELATIONSHIP_TYPES = RELATIONSHIP_TYPES;
           "Control", "ObjectControl", "control", "controllable"]
       , ["Control", business_object_types,
           "ObjectControl", "controllable", "control"]
-      , [business_plus_program_object_types,
+      , [business_plus_program_and_directive_object_types,
           "Objective", "ObjectObjective", "objective", "objectiveable", "object_objectives"]
-      , ["Objective", business_plus_program_object_types,
+      , ["Objective", business_plus_program_and_directive_object_types,
           "ObjectObjective", "objectiveable", "objective", "objective_objects"]
       , ["Objective", "Objective",
           "ObjectObjective", "objective", "objectiveable", "object_objectives"]
       , ["Objective", "Objective",
           "ObjectObjective", "objectiveable", "objective", "objective_objects"]
+      , ["Control", "Control",
+          "ControlControl", "implemented_control", "control", "control_controls"]
+      , ["Control", "Control",
+          "ControlControl", "control", "implemented_control", "implementing_control_controls"]
       , [all_object_types,
           "Person", "ObjectPerson", "person", "personable"]
       , [business_object_types,
@@ -361,6 +368,8 @@ GGRC.RELATIONSHIP_TYPES = RELATIONSHIP_TYPES;
       , ["Program", directive_object_types, "ProgramDirective", "directive", "program"]
       , [directive_object_types, "Program", "ProgramDirective", "program", "directive"]
       , [directive_object_types, "Section", null, null, "directive"]
+      , ["Control", directive_object_types, "DirectiveControl", "directive", "control"]
+      , [directive_object_types, "Control", "DirectiveControl", "control", "directive"]
       , [directive_object_types, "Control", null, null, "directive"]
       , ["Section", "Objective", "SectionObjective", "objective", "section"]
       //, ["Objective", "Section", "SectionObjective", "section", "objective"]
@@ -582,7 +591,14 @@ $(function() {
           page_instance, inst, { context: page_instance.context || { id : null } });
       // Map the object if we're able to
       if (join_object) {
-        join_object.save().done(triggerFlash);
+        join_object.save()
+          .done(triggerFlash)
+          .fail(function(xhr) {
+            // Currently, the only error we encounter here is uniqueness
+            // constraint violations.  Let's use a nicer message!
+            var message = "That object is already mapped";
+            $(ev.target).trigger("ajax:flash", { error: message });
+          });
       }
       // Otherwise throw a warning
       else {

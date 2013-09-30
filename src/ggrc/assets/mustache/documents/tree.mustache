@@ -1,5 +1,5 @@
 
-  <li class="tree-item" data-id="{{instance.id}}" data-object-id="{{instance.id}}" data-object-type="{{instance.constructor.shortName.toLowerCase}}">
+  <li class="tree-item" data-object-id="{{instance.id}}" data-object-type="{{instance.constructor.table_singular}}">
     <div class='item-main' {{data 'model'}}>
       <a href="javascript://" class="openclose">
         <div class='row-fluid'>
@@ -58,6 +58,9 @@
             </div>
           </div>
         </div>
+
+        {{{render '/static/mustache/base_objects/mappings_detail.mustache' result=result parent_instance=parent_instance}}}
+
       </div>
 
       {{#if draw_children}}

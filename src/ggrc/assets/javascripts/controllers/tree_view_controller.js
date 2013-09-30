@@ -48,6 +48,7 @@ can.Control("CMS.Controllers.TreeView", {
     , draw_children : true
     , find_function : null
     , options_property : "tree_view_options"
+    , allow_reading : true
     , allow_mapping : true
     , allow_creating : true
     , child_options : [] //this is how we can make nested configs. if you want to use an existing 
@@ -90,21 +91,10 @@ can.Control("CMS.Controllers.TreeView", {
       if (that.element) {
         that.element.trigger("loading");
         that.init_view();
-        that.options.list ? that.draw_list() : that.fetch_list();
+        if (that.options.allow_reading)
+          that.options.list ? that.draw_list() : that.fetch_list();
       }
     }, 100);
-
-    var object_type = can.underscore(
-          this.options.model ? this.options.model.shortName : "Object")
-      , object_meta_type = can.underscore(window.cms_singularize(
-          this.options.model ? this.options.model.root_object : "Object"))
-      ;
-    this.element
-      .attr("data-object-type", object_type)
-      .data("object-type", object_type);
-    this.element
-      .attr("data-object-meta-type", object_meta_type)
-      .data("object-meta-type", object_meta_type);
 
     this.options.attr("allow_mapping_or_creating",
       this.options.allow_mapping || this.options.allow_creating);
@@ -278,6 +268,10 @@ can.Control("CMS.Controllers.TreeView", {
   , "{original_list} remove" : function(list, ev, oldVals, index) {
     var that = this;
 
+    //  FIXME: This assumes we're replacing the entire list, and corrects for
+    //    instances being removed and immediately re-added.  This should be
+    //    changed to support exact mirroring of the order of
+    //    `this.options.list`.
     //assume we are doing a replace
     this.oldList = can.map(oldVals, function(v) { return v.instance ? v.instance : v; });
     GGRC.queue_event(function() {
@@ -342,6 +336,8 @@ can.Control("CMS.Controllers.TreeView", {
   // There is no check for parentage anymore.  When this event is triggered, it needs to be triggered
   // at the appropriate level of the tree.
   , " newChild" : function(el, ev, data) {
+    //  FIXME: This should be done with indices so the elements exactly
+    //    mirror the order of `this.options.list`.
     var prepped = this.prepare_child_options(data)
     this.options.list.push(prepped);
     this.add_child_lists([prepped]);
@@ -351,24 +347,29 @@ can.Control("CMS.Controllers.TreeView", {
   , " removeChild" : function(el, ev, data) {
     var that = this
       , instance
-      , options = new can.Observe.TreeOptions();
+      ;
 
-    var model = data.instance
-    ? data.instance
-    : (data instanceof this.options.model
-      ? data
-      : new this.options.model(data.serialize ? data.serialize() : data));
+    if (data.instance && data.instance instanceof this.options.model)
+      instance = data.instance;
+    else
+      instance = data;
+
+    //  FIXME: This should be done using indices, when the order of elements
+    //    is guaranteed to mirror the order of `this.options.list`.
+
+    //  Replace the list with the list sans the removed instance
     that.options.list.replace(
-      can.map(
-        this.options.list
-        , function(v, i) {
-          if(v.instance.id !== model.id) {
-            return v;
-          } else {
-          }
-        })
-    );
-    that.element.children("[data-object-id=" + model.id + "]").remove();
+      can.map(this.options.list, function(options, i) {
+        if (options.instance !== instance)
+          return options;
+      }));
+
+    //  Remove items by data attributes
+    that.element.children([
+        "[data-object-id=" + instance.id + "]"
+      , "[data-object-type=" + instance.constructor.table_singular + "]"
+      ].join("")
+    ).remove();
     ev.stopPropagation();
   }
 

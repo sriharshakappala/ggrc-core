@@ -57,6 +57,7 @@ def named_example_resource(context, resource_type, example_name, **kwargs):
 @when('GET of "{typename}" collection')
 def get_collection_for(context, typename):
   do_get_collection_for(context, typename)
+  context.collection_type = typename
 
 @given('GET of "{typename}" collection with stubs only')
 @when('GET of "{typename}" collection with stubs only')
@@ -192,7 +193,8 @@ def define_current_user(context, user_json):
         cookies=getattr(context, 'cookies', {})
         )
     assert response.status_code == 200, 'Failed to logout!!'
-    delattr(context, 'cookies')
+    if hasattr(context, 'cookies'):
+      delattr(context, 'cookies')
   context.current_user_data = json.loads(user_json.replace('\\"', '"'))
   context.current_user_json = json.dumps(context.current_user_data)
 

@@ -1,5 +1,4 @@
-
-  <li class="tree-item governance" data-object-id="{{instance.id}}" data-object-sub-type="{{instance.lowercase_kind}}" data-object-type="{{instance.constructor.shortName}}" data-object-meta-type="directive">
+  <li class="tree-item governance" data-object-id="{{instance.id}}" data-object-type="{{instance.constructor.table_singular}}">
     <div class="item-main" {{#instance}}{{data 'model'}}{{/instance}}>
       <a href="javascript://" class="openclose">
         <div class="row-fluid">
@@ -69,6 +68,8 @@
           </div>
         {{/instance.description}}
 
+        {{{render '/static/mustache/base_objects/mappings_detail.mustache' result=result parent_instance=parent_instance}}}
+
         <div class="row-fluid">
           <div class="span6">
             <div class="tree-info">
@@ -115,4 +116,3 @@
     </div>
     {{/if}}
   </li>
-
