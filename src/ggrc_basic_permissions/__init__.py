@@ -81,6 +81,9 @@ class UserPermissions(DefaultUserPermissions):
     return user.email if hasattr(user, 'email') else 'ANONYMOUS'
 
   def load_permissions(self):
+    if hasattr(session, '_permissions_loaded'):
+      return
+    session._permissions_loaded = True
     user = get_current_user()
     email = self.get_email_for(user)
     session['permissions'] = {}
