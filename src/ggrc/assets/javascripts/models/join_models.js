@@ -358,27 +358,21 @@ can.Model.Join("CMS.Models.SectionObjective", {
 });
 
 can.Model.Join("CMS.Models.DirectiveControl", {
-  join_keys : {
-    "directive" : CMS.Models.Directive
-    , "control" : CMS.Models.Control
+    root_collection : "directive_controls"
+  , root_object : "directive_control"
+  , findAll : "GET /api/directive_controls"
+  , create : "POST /api/directive_controls"
+  , destroy : "DELETE /api/directive_controls/{id}"
+  , join_keys : {
+      directive : CMS.Models.Directive
+    , control : CMS.Models.Control
   }
-  , findAll : function(params) {
-    throw "ERROR : DirectiveControl is not yet implemented";
-  }
-  , findOne : function(params) {
-    throw "ERROR : DirectiveControl is not yet implemented";
-  }
-  , update : function(params) {
-    throw "ERROR : DirectiveControl is not yet implemented";
-  }
-  , create : function(params) {
-    throw "ERROR : DirectiveControl is not yet implemented";
-  }
-  , destroy : function(params) {
-    throw "ERROR : DirectiveControl is not yet implemented";
+  , attributes : {
+      modified_by : "CMS.Models.Person.stub"
+    , directive : "CMS.Models.Directive.stub"
+    , control : "CMS.Models.Control.stub"
   }
 }, {
-
 });
 
 can.Model.Join("CMS.Models.ProgramControl", {

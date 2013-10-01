@@ -101,6 +101,7 @@ can.Model.Cacheable("CMS.Models.Directive", {
     , object_objectives : "CMS.Models.ObjectObjective.stubs"
     , objectives : "CMS.Models.Objective.stubs"
     , program_directives : "CMS.Models.ProgramDirective.stubs"
+    , directive_controls : "CMS.Models.DirectiveControl.stubs"
     , programs : "CMS.Models.Program.stubs"
     , sections : "CMS.Models.Section.stubs"
     , controls : "CMS.Models.Control.stubs"
@@ -162,6 +163,7 @@ CMS.Models.Directive("CMS.Models.Regulation", {
     , object_objectives : "CMS.Models.ObjectObjective.stubs"
     , objectives : "CMS.Models.Objective.stubs"
     , program_directives : "CMS.Models.ProgramDirective.stubs"
+    , directive_controls : "CMS.Models.DirectiveControl.stubs"
     , programs : "CMS.Models.Program.stubs"
     , sections : "CMS.Models.Section.stubs"
     , controls : "CMS.Models.Control.stubs"
@@ -201,6 +203,7 @@ CMS.Models.Directive("CMS.Models.Policy", {
     , object_objectives : "CMS.Models.ObjectObjective.stubs"
     , objectives : "CMS.Models.Objective.stubs"
     , program_directives : "CMS.Models.ProgramDirective.stubs"
+    , directive_controls : "CMS.Models.DirectiveControl.stubs"
     , programs : "CMS.Models.Program.stubs"
     , sections : "CMS.Models.Section.stubs"
     , controls : "CMS.Models.Control.stubs"
@@ -240,6 +243,7 @@ CMS.Models.Directive("CMS.Models.Contract", {
     , object_objectives : "CMS.Models.ObjectObjective.stubs"
     , objectives : "CMS.Models.Objective.stubs"
     , program_directives : "CMS.Models.ProgramDirective.stubs"
+    , directive_controls : "CMS.Models.DirectiveControl.stubs"
     , programs : "CMS.Models.Program.stubs"
     , sections : "CMS.Models.Section.stubs"
     , controls : "CMS.Models.Control.stubs"
@@ -923,6 +927,10 @@ can.Model.Cacheable("CMS.Models.Role", {
   , update : "PUT /api/roles/{id}"
   , destroy : "DELETE /api/roles/{id}"
   , create : "POST /api/roles"
+  , scopes : [
+        "Private Program"
+      , "System"
+    ]
   , defaults : {
       permissions: {
           read: []
@@ -939,8 +947,7 @@ can.Model.Cacheable("CMS.Models.Role", {
   }
 
   , not_system_role : function() {
-    return can.inArray(
-        this.name, ["ProgramOwner", "ProgramEditor", "ProgramReader"]) < 0;
+    return this.attr('scope') !== "System";
   }
 
   , permission_summary : function() {

@@ -88,4 +88,4 @@ class Documentable(object):
     from sqlalchemy import orm
 
     query = super(Documentable, cls).eager_query()
-    return query.options(orm.joinedload('object_documents'))
+    return query.options(orm.subqueryload('object_documents'))

@@ -163,6 +163,7 @@
         , button_view : button_view
         , model : model
         , instance : instance
+        , scopes : CMS.Models.Role.scopes
         , modal_title : (instance ? "Edit " : "New ") + $trigger.attr("data-object-singular")
         , content_view : GGRC.mustache_path + "/" + $trigger.attr("data-object-plural") + "/modal_content.mustache"
       };

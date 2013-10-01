@@ -8,6 +8,7 @@ from .associationproxy import association_proxy
 from .mixins import deferred, BusinessObject, Timeboxed
 from .object_document import Documentable
 from .object_person import Personable
+from .object_objective import Objectiveable
 from .relationship import Relatable
 from .reflection import PublishOnly
 from .utils import validate_option
@@ -64,6 +65,7 @@ class Directive(Timeboxed, BusinessObject, db.Model):
       'organization',
       'programs',
       PublishOnly('program_directives'),
+      PublishOnly('directive_controls'),
       'scope',
       'sections',
       'version',
@@ -96,10 +98,11 @@ class Directive(Timeboxed, BusinessObject, db.Model):
         orm.joinedload('audit_duration'),
         orm.subqueryload('controls'),
         orm.subqueryload_all('program_directives.program'),
+        orm.subqueryload_all('directive_controls'),
         orm.subqueryload('sections'))
 
 # FIXME: For subclasses, restrict kind
-class Policy(Relatable, Documentable, Personable, Directive):
+class Policy(Relatable, Objectiveable, Documentable, Personable, Directive):
   __mapper_args__ = {
       'polymorphic_identity': 'Policy'
       }
@@ -113,7 +116,7 @@ class Policy(Relatable, Documentable, Personable, Directive):
   def validates_meta_kind(self, key, value):
     return 'Policy'
 
-class Regulation(Relatable, Documentable, Personable, Directive):
+class Regulation(Relatable, Objectiveable, Documentable, Personable, Directive):
   __mapper_args__ = {
       'polymorphic_identity': 'Regulation'
       }
@@ -124,7 +127,7 @@ class Regulation(Relatable, Documentable, Personable, Directive):
   def validates_meta_kind(self, key, value):
     return 'Regulation'
 
-class Contract(Relatable, Documentable, Personable, Directive):
+class Contract(Relatable, Objectiveable, Documentable, Personable, Directive):
   __mapper_args__ = {
       'polymorphic_identity': 'Contract'
       }

@@ -8,15 +8,22 @@
             <div class="item-data">
               <div class="tree-title-area">
                 {{name}}
+                  {{#scope}}
+                    <span class="scope">
+                      {{scope}}
+                    </span>
+                  {{/scope}}
               </div>
             </div>
           </div>
           <div class="span1">
+            {{^if_equals scope 'System'}}
             <div class="counter">
               <a data-object-plural="roles" data-object-singular="Role" data-object-id="{{id}}" data-modal-class="modal-wide" data-placement="left" data-toggle="role-modal" href="javascript://" rel="tooltip" title="Edit">
                 <i class="grcicon-edit"></i>
               </a>
             </div>
+            {{/if_equals}}
           </div>
         </div>
       </div>

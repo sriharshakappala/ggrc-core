@@ -94,14 +94,25 @@ CMS.Controllers.Filterable("CMS.Controllers.DashboardWidgets", {
       if (this.options.content_controller_selector)
         controller_content =
           controller_content.find(this.options.content_controller_selector);
-      controller_content
-        .html($(new Spinner().spin().el)
-          .css({
-            width: '100px',
-            height: '100px',
-            left: '50px',
-            top: '40px'
-          }));
+
+      // Determine whether the user can read this widget
+      var options = this.options.content_controller_options;
+      options.allow_reading = Permission.is_allowed("read", (options.model && options.model.shortName) || options.model, Permission.page_context_id());
+
+      if (options.allow_reading) {
+        controller_content
+          .html($(new Spinner().spin().el)
+            .css({
+              width: '100px',
+              height: '100px',
+              left: '50px',
+              top: '40px'
+            }));
+      }
+      else {
+        options.footer_view = "/static/mustache/base_objects/tree_footer_no_access.mustache"
+      }
+
       new this.options.content_controller(
           controller_content
         , this.options.content_controller_options

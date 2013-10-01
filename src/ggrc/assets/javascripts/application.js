@@ -89,8 +89,6 @@ window.onerror = function(message, url, linenumber) {
   };
 
 (function(GGRC) {
-  var eventqueue = [];
-
 jQuery.extend(GGRC, {
   infer_object_type : function(data) {
     var decision_tree = {
@@ -180,23 +178,29 @@ jQuery.extend(GGRC, {
     return GGRC._page_instance;
   }
 
-  , queue_event : function(event) {
-    var timegap = 100 //ms
-    , currentTimeout = null;
-    function runNext() {
-      var fn = eventqueue.shift();
-      fn && fn();
-      if(eventqueue.length) {
-        currentTimeout = setTimeout(runNext, timegap);
-      } else {
-        currentTimeout = null;
-      }
+  , eventqueue: []
+  , eventqueueTimeout: null
+  , eventqueueTimegap: 20 //ms
+
+  , queue_exec_next: function() {
+      var fn = GGRC.eventqueue.shift();
+      if (fn)
+        fn();
+      if (GGRC.eventqueue.length > 0)
+        GGRC.eventqueueTimeout =
+          setTimeout(GGRC.queue_exec_next, GGRC.eventqueueTimegap);
+      else
+        GGRC.eventqueueTimeout = null;
     }
-    eventqueue.push(event);
-    if(!currentTimeout) {
-      currentTimeout = setTimeout(runNext, timegap);
+
+  , queue_event : function(events) {
+      if (typeof(events) === "function")
+        events = [events];
+      GGRC.eventqueue.push.apply(GGRC.eventqueue, events);
+      if (!GGRC.eventqueueTimeout)
+        GGRC.eventqueueTimeout =
+          setTimeout(GGRC.queue_exec_next, GGRC.eventqueueTimegap);
     }
-  }
 });
 })(GGRC);
 

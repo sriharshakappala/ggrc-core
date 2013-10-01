@@ -30,7 +30,12 @@ class CompletePermissionsProvider(object):
     pass
 
   def permissions_for(self, user):
-    return UserPermissions()
+    ret = UserPermissions()
+    # force the permissions to be loaded into session, otherwise templates
+    # that depend on the permissions being available in session may assert
+    # the user has no permissions!
+    ret.check_permissions()
+    return ret
 
   def handle_admin_user(self, user):
     pass
@@ -113,7 +118,7 @@ class UserPermissions(DefaultUserPermissions):
           for action, resource_types in user_role.role.permissions.items():
             for resource_type in resource_types:
               session['permissions'].setdefault(action, {})\
-                  .setdefault(resource_type, [])\
+                  .setdefault(resource_type, list())\
                   .append(user_role.context_id)
       #grab personal context
       personal_context = db.session.query(Context).filter(

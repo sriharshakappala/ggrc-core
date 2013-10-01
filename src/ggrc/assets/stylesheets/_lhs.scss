@@ -159,6 +159,10 @@
     li {
       font-size:12px;
       border-bottom:1px solid #ddd;
+      &.no-access {
+        padding-left:34px;
+        background:#eee;
+      }
       a {
         [class*="span"] {
           min-height:24px;

@@ -26,6 +26,7 @@ class Role(Base, Described, db.Model):
 
   name = db.Column(db.String(128), nullable=False)
   permissions_json = db.Column(db.Text(), nullable=False)
+  scope = db.Column(db.String(64), nullable=False)
 
   @simple_property
   def permissions(self):
@@ -40,7 +41,7 @@ class Role(Base, Described, db.Model):
   def permissions(self, value):
     self.permissions_json = json.dumps(value)
 
-  _publish_attrs = ['name', 'permissions']
+  _publish_attrs = ['name', 'permissions', 'scope']
 
   @classmethod
   def eager_query(cls):
@@ -49,6 +50,10 @@ class Role(Base, Described, db.Model):
     # FIXME: 'RoleReader' role should not be shown in interface, but this is
     #   the wrong place to filter it.
     return query.filter(not_(cls.name == 'RoleReader'))
+
+  def _display_name(self):
+    return self.name
+
 
 class UserRole(Base, db.Model):
   __tablename__ = 'user_roles'
@@ -81,3 +86,6 @@ class UserRole(Base, db.Model):
     return query.options(
         orm.subqueryload('role'),
         orm.subqueryload('person'))
+
+  def _display_name(self):
+    return self.person.display_name + '<->' + self.role.display_name

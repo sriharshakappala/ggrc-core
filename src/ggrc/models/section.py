@@ -60,6 +60,6 @@ class Section(Documentable, Personable, Hierarchical, BusinessObject, db.Model):
     query = super(Section, cls).eager_query()
     return query.options(
         orm.joinedload('directive'),
-        orm.joinedload('control_sections'),
-        orm.joinedload('section_objectives'),
-        orm.joinedload('object_sections'))
+        orm.subqueryload('control_sections'),
+        orm.subqueryload('section_objectives'),
+        orm.subqueryload('object_sections'))

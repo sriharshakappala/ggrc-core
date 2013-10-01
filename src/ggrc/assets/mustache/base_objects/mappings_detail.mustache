@@ -1,0 +1,23 @@
+{{#if_result_has_extended_mappings result.bindings_compute parent_instance}}
+<div class="row-fluid">
+  This {{instance.constructor.title_singular}} is mapped to
+  {{#each_with_extras_as "binding" result.bindings_compute}}
+    {{#unless isFirst}}{{#if isLast}}and{{/if}}{{/unless}}
+    {{#if_equals binding.instance parent_instance}}
+    this {{parent_instance.constructor.title_singular}}{{#if isLast}}.{{else}},{{/if}}
+    {{else}}
+    {{#if_equals binding.instance.constructor.shortName "Section"}}
+    <i class="grcicon-{{binding.instance.constructor.table_singular}}-color"></i><b href="{{link_to_tree binding.instance.directive binding.instance}}">{{binding.instance.title}}</b>
+    {{#if binding.instance.directive}}
+      of
+      {{#using directive=binding.instance.directive}}
+        <i class="grcicon-{{directive.constructor.table_singular}}-color"></i><b href="{{link_to_tree directive}}">{{directive.title}}</b>{{#if isLast}}.{{else}},{{/if}}
+      {{/using}}
+    {{/if}}
+    {{else}}
+    <i class="grcicon-{{binding.instance.constructor.table_singular}}-color"></i><b href="{{link_to_tree binding.instance}}">{{binding.instance.title}}</b>{{#if isLast}}.{{else}},{{/if}}
+    {{/if_equals}}
+    {{/if_equals}}
+  {{/each_with_extras_as}}
+</div>
+{{/if_result_has_extended_mappings}}

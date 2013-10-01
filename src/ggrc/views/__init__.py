@@ -18,6 +18,7 @@ Handle non-RESTful views, e.g. routes which return HTML rather than JSON
 """
 
 def get_permissions_json():
+  permissions.permissions_for(permissions.get_user())
   return json.dumps(session['permissions'])
 
 @app.context_processor
@@ -169,7 +170,7 @@ def import_controls(directive_id):
       if csv_file and allowed_file(csv_file.filename):
         filename = secure_filename(csv_file.filename)
         options = {}
-        options['directive_id'] = directive_id
+        options['directive_id'] = int(directive_id)
         options['dry_run'] = dry_run
         converter = handle_csv_import(ControlsConverter, csv_file, **options)
         if dry_run:
@@ -382,14 +383,19 @@ def export_sections(directive_id):
 def export_controls(directive_id):
   from ggrc.converters.controls import ControlsConverter
   from ggrc.converters.import_helper import handle_converter_csv_export
-  from ggrc.models.all_models import Directive
+  from ggrc.models.all_models import Directive, Control
 
   options = {}
   directive = Directive.query.filter_by(id=int(directive_id)).first()
   options['directive'] = directive
-  options['export'] = True
   filename = "{}-controls.csv".format(directive.slug)
-  return handle_converter_csv_export(filename, directive.controls, ControlsConverter, **options)
+  if 'ids' in request.args:
+    ids = request.args['ids'].split(",")
+    controls = Control.query.filter(Control.id.in_(ids))
+  else:
+    controls = directive.controls
+  options['export'] = True
+  return handle_converter_csv_export(filename, controls, ControlsConverter, **options)
 
 ViewEntry = namedtuple('ViewEntry', 'url model_class service_class')
 

@@ -13,7 +13,7 @@ def translate_message(exception):
   message = exception.message
   if isinstance(exception, IntegrityError):
     # TODO: Handle not null, foreign key errors, uniqueness errors with compound keys
-    duplicate_entry_pattern = re.compile(r'\(1062, "(Duplicate entry \'[^\']*\')')
+    duplicate_entry_pattern = re.compile(r'\(1062, u?"(Duplicate entry \'[^\']*\')')
     matches = duplicate_entry_pattern.search(message)
     if matches:
       return matches.group(1)

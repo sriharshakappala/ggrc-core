@@ -1,5 +1,5 @@
 from .base import *
-from ggrc.models import Directive, Control, System, Process
+from ggrc.models import Directive, Control, System, Process, DirectiveControl
 from .base_row import *
 from collections import OrderedDict
 from ggrc.models.control import CATEGORY_CONTROL_TYPE_ID, CATEGORY_ASSERTION_TYPE_ID
@@ -7,15 +7,15 @@ from ggrc.models.control import CATEGORY_CONTROL_TYPE_ID, CATEGORY_ASSERTION_TYP
 class ControlRowConverter(BaseRowConverter):
   model_class = Control
 
+  def find_by_slug(self, slug):
+    from sqlalchemy import orm
+    return self.model_class.query.filter_by(slug=slug).options(
+        orm.joinedload('directive_controls')).first()
+
   def setup_object(self):
     self.obj = self.setup_object_by_slug(self.attrs)
-    if self.obj.directive \
-       and self.obj.directive is not self.importer.options.get('directive'):
-          self.importer.errors.append('Slug code is already used.')
-    else:
-      self.obj.directive = self.importer.options.get('directive')
-      if self.obj.id is not None:
-        self.add_warning('slug', "Control already exists and will be updated")
+    if self.obj.id is not None:
+      self.add_warning('slug', "Control already exists and will be updated")
 
   def reify(self):
     self.handle('slug', SlugColumnHandler)
@@ -47,8 +47,15 @@ class ControlRowConverter(BaseRowConverter):
 
   def save_object(self, db_session, **options):
     if options.get('directive_id'):
-      self.obj.directive_id = int(options.get('directive_id'))
       db_session.add(self.obj)
+
+  def after_save(self, db_session, **options):
+    directive_id = options.get('directive_id')
+    for directive_control in self.obj.directive_controls:
+      if directive_control.directive_id == directive_id:
+        return
+    db_session.add(
+        DirectiveControl(directive_id=directive_id, control=self.obj))
 
 class ControlsConverter(BaseConverter):
 

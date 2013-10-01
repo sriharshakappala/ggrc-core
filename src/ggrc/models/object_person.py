@@ -90,4 +90,4 @@ class Personable(object):
     query = super(Personable, cls).eager_query()
     return query.options(
         #orm.subqueryload_all('object_people.person'))
-        orm.joinedload('object_people'))
+        orm.subqueryload('object_people'))

@@ -62,9 +62,6 @@ class DefaultUserPermissions(UserPermissions):
     permissions = session['permissions']
     if permissions is None:
       return True
-    if permission.context_id is None:
-      # None is public context
-      return True
     if self._permission_match(permission, permissions):
       return True
     if self._permission_match(self.ADMIN_PERMISSION, permissions):

@@ -9,7 +9,7 @@ from collections import namedtuple
 from sqlalchemy import and_, cast
 from sqlalchemy.ext.associationproxy import AssociationProxy
 from sqlalchemy.orm import joinedload_all
-from sqlalchemy.types import AbstractType, Boolean, Date, DateTime
+from sqlalchemy.types import AbstractType, Boolean, Date, DateTime, Integer
 from werkzeug.exceptions import BadRequest
 
 AttributeQuery = namedtuple('AttributeQuery', 'filter joinlist options')
@@ -55,6 +55,9 @@ class AttributeQueryBuilder(object):
             'Malformed Date {0} for parameter {1}. '
             'Error message was: {2}'.format(value, arg, e.message)
             )
+    elif attr_type is Integer and value == '':
+      print 'coercing empty string to None'
+      return None
     return value
 
   def check_valid_property(self, attr, attrname):
@@ -97,7 +100,11 @@ class AttributeQueryBuilder(object):
       options.extend(self.process_eager_loading(value))
     else:
       value = self.coerce_value_for_query_param(attr, arg, value)
-      filters.append(attr == cast(value, attr.type))
+      if value is not None:
+        filters.append(attr == cast(value, attr.type))
+      else:
+        filters.append(attr == None)
+    print filters
     return joinlist, filters, options
 
   def resolve_path_segment(self, segment, model):
