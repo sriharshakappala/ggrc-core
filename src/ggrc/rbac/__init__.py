@@ -20,7 +20,7 @@ def context_query_filter(context_column, contexts):
     if None in contexts:
       filter_expr = context_column == None
       # We're modifying `contexts`, so copy
-      contexts = contexts.copy()
+      contexts = set(contexts)
       contexts.remove(None)
     if len(contexts) > 0:
       filter_in_expr = context_column.in_(contexts)

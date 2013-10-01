@@ -73,6 +73,10 @@ if settings.ENABLE_JASMINE:
   jasmine.specs(
       Asset("dashboard-js-specs"))
 
+import logging
+logging.getLogger().setLevel(logging.DEBUG)
+app.logger.setLevel(logging.DEBUG)
+
 if hasattr(settings, 'SQLALCHEMY_RECORD_QUERIES')\
     and settings.SQLALCHEMY_RECORD_QUERIES:
 
@@ -83,7 +87,7 @@ if hasattr(settings, 'SQLALCHEMY_RECORD_QUERIES')\
   def display_queries(response):
     from flask.ext.sqlalchemy import get_debug_queries
     for query in get_debug_queries():
-      app.logger.info("{:.4f} {}\n{}".format(
+      app.logger.info("{:.8f} {}\n{}".format(
         query.duration,
         query.context,
         with_prefix(query.statement, "       ")))

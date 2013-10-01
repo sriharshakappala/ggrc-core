@@ -24,4 +24,7 @@ port = app.config.get("PORT") or 8080
 #from werkzeug.contrib.profiler import ProfilerMiddleware
 #app.config['PROFILE'] = True
 #app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[60])
+import logging
+logging.getLogger().setLevel(logging.DEBUG)
+
 app.run(host=host, port=port)

@@ -6,7 +6,7 @@
 import json
 from flask import request, current_app
 from ggrc.fulltext import get_indexer
-from ggrc.utils import DateTimeEncoder, url_for
+from ggrc.utils import DateTimeEncoder, url_for, benchmark
 
 def search():
   terms = request.args.get('q')
@@ -37,7 +37,8 @@ def search():
 
 def do_counts(terms, types=None):
   indexer = get_indexer()
-  results = indexer.counts(terms, types=types)
+  with benchmark("Counts"):
+    results = indexer.counts(terms, types=types)
 
   return current_app.make_response((
     json.dumps({ 'results': {
@@ -53,9 +54,10 @@ def do_search(
     terms, list_for_type, types=None, permission_type='read',
     permission_model=None):
   indexer = get_indexer()
-  results = indexer.search(
-      terms, types=types, permission_type=permission_type,
-      permission_model=permission_model)
+  with benchmark("Search"):
+    results = indexer.search(
+        terms, types=types, permission_type=permission_type,
+        permission_model=permission_model)
   seen_results = {}
 
   for result in results:

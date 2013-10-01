@@ -8,7 +8,7 @@ from blinker import Namespace
 from flask import redirect, request, render_template, current_app
 from ggrc.rbac import permissions
 from ggrc.services.common import ModelView, as_json
-from ggrc.utils import view_url_for
+from ggrc.utils import view_url_for, benchmark
 from werkzeug.exceptions import Forbidden
 
 class BaseObjectView(ModelView):
@@ -74,7 +74,8 @@ class BaseObjectView(ModelView):
     return [template for func,template in contributions if template is not None]
 
   def get(self, id):
-    obj = self.get_object(id)
+    with benchmark("Query for object"):
+      obj = self.get_object(id)
     if obj is None:
       return self.not_found_response()
     if 'Accept' in self.request.headers and \
@@ -84,7 +85,8 @@ class BaseObjectView(ModelView):
     if not permissions.is_allowed_read(self.model.__name__, obj.context_id):
       raise Forbidden()
 
-    rendered_template = self.render_template_for_object(obj)
+    with benchmark("Render"):
+      rendered_template = self.render_template_for_object(obj)
 
     # FIXME: Etag based on rendered output, or object itself?
     #if 'If-None-Match' in self.request.headers and \

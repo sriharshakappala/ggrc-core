@@ -6,6 +6,8 @@
 import datetime
 import json
 import sys
+import time
+from flask import current_app
 
 class DateTimeEncoder(json.JSONEncoder):
   """Custom JSON Encoder to handle datetime objects
@@ -72,3 +74,17 @@ def view_url_for(obj, id=None):
   if id:
     return service.url_for(id=id)
   return service.url_for(obj)
+
+
+class BenchmarkContextManager(object):
+  def __init__(self, message):
+    self.message = message
+
+  def __enter__(self):
+    self.start = time.time()
+
+  def __exit__(self, exc_type, exc_value, exc_trace):
+    end = time.time()
+    current_app.logger.info("{:.4f} {}".format(end - self.start, self.message))
+
+benchmark = BenchmarkContextManager
