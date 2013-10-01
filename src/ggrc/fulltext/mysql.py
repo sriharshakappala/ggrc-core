@@ -5,7 +5,7 @@
 
 from ggrc import db
 from ggrc.models.all_models import all_models
-from ggrc.rbac import permissions
+from ggrc.rbac import permissions, context_query_filter
 from sqlalchemy import event, and_, or_, text
 from sqlalchemy.schema import DDL
 from .sql import SqlIndexer
@@ -41,37 +41,30 @@ class MysqlIndexer(SqlIndexer):
     for model_name in model_names:
       type_query = None
       if permission_type == 'read':
-        type_permissions = permissions.read_contexts_for(
+        contexts = permissions.read_contexts_for(
             permission_model or model_name)
       elif permission_type == 'create':
-        type_permissions = permissions.create_contexts_for(
+        contexts = permissions.create_contexts_for(
             permission_model or model_name)
       elif permission_type == 'update':
-        type_permissions = permissions.update_contexts_for(
+        contexts = permissions.update_contexts_for(
             permission_model or model_name)
       elif permission_type == 'delete':
-        type_permissions = permissions.delete_contexts_for(
+        contexts = permissions.delete_contexts_for(
             permission_model or model_name)
 
-      if permission_model and type_permissions:
-        type_permissions = set(type_permissions) & set(
+      if permission_model and contexts:
+        contexts = set(contexts) & set(
             permissions.read_contexts_for(model_name))
 
-      if type_permissions is None:
-        type_query = (MysqlRecordProperty.type == model_name)
-      elif type_permissions:
-        type_query = and_(
-            MysqlRecordProperty.type == model_name,
-            MysqlRecordProperty.context_id.in_(type_permissions))
-      else:
-        type_query = False
+      type_query = and_(
+          MysqlRecordProperty.type == model_name,
+          context_query_filter(MysqlRecordProperty.context_id, contexts))
       type_queries.append(type_query)
 
     return and_(
         MysqlRecordProperty.type.in_(model_names),
-        or_(
-          MysqlRecordProperty.context_id == None,
-          *type_queries))
+        or_(*type_queries))
 
   def _get_filter_query(self, terms):
     if not terms:
