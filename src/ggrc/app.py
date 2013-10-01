@@ -73,9 +73,9 @@ if settings.ENABLE_JASMINE:
   jasmine.specs(
       Asset("dashboard-js-specs"))
 
-import logging
-logging.getLogger().setLevel(logging.DEBUG)
-app.logger.setLevel(logging.DEBUG)
+#import logging
+#logging.getLogger().setLevel(logging.DEBUG)
+#app.logger.setLevel(logging.DEBUG)
 
 if hasattr(settings, 'SQLALCHEMY_RECORD_QUERIES')\
     and settings.SQLALCHEMY_RECORD_QUERIES:
