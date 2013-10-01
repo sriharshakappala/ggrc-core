@@ -14,20 +14,21 @@ from ggrc.converters.controls import ControlsConverter
 from ggrc.models import Control, Category, Policy, System
 from tests.ggrc import TestCase
 
-
 THIS_ABS_PATH = abspath(dirname(__file__))
 CSV_DIR = join(THIS_ABS_PATH, 'comparison_csvs/')
 
 
 class TestImport(TestCase):
   def setUp(self):
+    self.patcher = patch('ggrc.converters.base.log_event')
+    self.mock_log = self.patcher.start()
     super(TestImport, self).setUp()
 
   def tearDown(self):
+    self.patcher.stop()
     super(TestImport, self).tearDown()
 
-  @patch('ggrc.converters.base.log_event')
-  def test_simple(self, mock_log):
+  def test_simple(self):
     csv_filename = join(CSV_DIR, "minimal_export.csv")
     expected_titles = set([
       "Minimal Control 1",
@@ -65,8 +66,7 @@ class TestImport(TestCase):
         actual_slugs,
         "Control slugs not imported correctly"
     )
-    #mock_log.assert_called_once_with(db.session)
-    print mock_log.mock_calls
+    self.mock_log.assert_called_once_with(db.session)
 
   def test_mappings(self):
     sys1 = System(slug="ACLS", title="System1")
@@ -117,4 +117,4 @@ class TestImport(TestCase):
               system.slug
           ),
       )
-
+    self.mock_log.assert_called_once_with(db.session)
