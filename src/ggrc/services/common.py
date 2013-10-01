@@ -36,6 +36,20 @@ from .attribute_query import AttributeQueryBuilder
 resources.
 """
 
+class BenchmarkContextManager(object):
+  def __init__(self, message):
+    self.message = message
+
+  def __enter__(self):
+    self.start = time.time()
+
+  def __exit__(self, exc_type, exc_value, exc_trace):
+    end = time.time()
+    current_app.logger.info("{:.4f} {}".format(end - self.start, self.message))
+
+benchmark = BenchmarkContextManager
+
+
 def inclusion_filter(obj):
   return permissions.is_allowed_read(obj.__class__.__name__, obj.context_id)
 
@@ -305,7 +319,8 @@ class Resource(ModelView):
 
   # Default JSON request handlers
   def get(self, id):
-    obj = self.get_object(id)
+    with benchmark("Query for object"):
+      obj = self.get_object(id)
     if obj is None:
       return self.not_found_response()
     if 'Accept' in self.request.headers and \
@@ -314,7 +329,8 @@ class Resource(ModelView):
         'application/json', 406, [('Content-Type', 'text/plain')]))
     if not permissions.is_allowed_read(self.model.__name__, obj.context_id):
       raise Forbidden()
-    object_for_json = self.object_for_json(obj)
+    with benchmark("Serialize object"):
+      object_for_json = self.object_for_json(obj)
     if 'If-None-Match' in self.request.headers and \
         self.request.headers['If-None-Match'] == self.etag(object_for_json):
       return current_app.make_response((
@@ -403,8 +419,11 @@ class Resource(ModelView):
       return current_app.make_response((
         'application/json', 406, [('Content-Type', 'text/plain')]))
 
-    objs = self.get_collection()
-    collection = self.collection_for_json(objs)
+    with benchmark("Query for collection"):
+      objs = self.get_collection()
+    with benchmark("Serialize collection"):
+      collection = self.collection_for_json(objs)
+
     if 'If-None-Match' in self.request.headers and \
         self.request.headers['If-None-Match'] == self.etag(collection):
       return current_app.make_response((
