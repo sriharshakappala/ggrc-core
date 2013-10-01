@@ -26,7 +26,8 @@ class TestImport(TestCase):
   def tearDown(self):
     super(TestImport, self).tearDown()
 
-  def test_simple(self):
+  @patch('ggrc.converters.base.log_event')
+  def test_simple(self, mock_log):
     csv_filename = join(CSV_DIR, "minimal_export.csv")
     expected_titles = set([
       "Minimal Control 1",
@@ -64,6 +65,8 @@ class TestImport(TestCase):
         actual_slugs,
         "Control slugs not imported correctly"
     )
+    #mock_log.assert_called_once_with(db.session)
+    print mock_log.mock_calls
 
   def test_mappings(self):
     sys1 = System(slug="ACLS", title="System1")
